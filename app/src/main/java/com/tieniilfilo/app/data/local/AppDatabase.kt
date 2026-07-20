@@ -30,7 +30,7 @@ import com.tieniilfilo.app.data.local.entity.YarnEntity
         ProjectYarnCrossRef::class,
         ProjectHookCrossRef::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false,
 )
 @TypeConverters(Converters::class)
@@ -92,6 +92,13 @@ abstract class AppDatabase : RoomDatabase() {
 
         val MIGRATION_3_4 = Migration(3, 4) { db ->
             db.execSQL("ALTER TABLE yarns ADD COLUMN custom_composition TEXT DEFAULT NULL")
+        }
+
+        val MIGRATION_4_5 = Migration(4, 5) { db ->
+            db.execSQL("ALTER TABLE yarns ADD COLUMN unit_price REAL DEFAULT NULL")
+            db.execSQL("ALTER TABLE yarns ADD COLUMN purchase_date INTEGER DEFAULT NULL")
+            db.execSQL("ALTER TABLE projects ADD COLUMN target_deadline INTEGER DEFAULT NULL")
+            db.execSQL("ALTER TABLE projects ADD COLUMN rating INTEGER NOT NULL DEFAULT 0")
         }
     }
 }

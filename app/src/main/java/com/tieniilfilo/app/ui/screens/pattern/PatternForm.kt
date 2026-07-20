@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.tieniilfilo.app.data.local.entity.PatternEntity
 import com.tieniilfilo.app.data.local.entity.PatternSourceType
 import com.tieniilfilo.app.data.local.entity.PatternType
 import com.tieniilfilo.app.ui.components.BottomSheetForm
@@ -49,6 +50,7 @@ import java.util.UUID
 fun PatternFormSheet(
     isVisible: Boolean,
     onDismiss: () -> Unit,
+    initialPattern: PatternEntity? = null,
     onSave: (
         title: String,
         type: PatternType,
@@ -57,19 +59,23 @@ fun PatternFormSheet(
         externalLink: String?,
         notes: String,
     ) -> Unit,
+    onUpdate: ((PatternEntity) -> Unit)? = null,
 ) {
     if (!isVisible) return
+
+    val isEditing = initialPattern != null
+    val formKey = initialPattern?.id ?: 0L
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val photoStorage = remember { PhotoStorage(context.applicationContext) }
 
-    var title by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf(PatternType.AMIGURUMI) }
-    var sourceType by remember { mutableStateOf(PatternSourceType.LINK) }
-    var link by remember { mutableStateOf("") }
-    var notes by remember { mutableStateOf("") }
-    var fileUri by remember { mutableStateOf<String?>(null) }
+    var title by remember(formKey) { mutableStateOf(initialPattern?.title ?: "") }
+    var type by remember(formKey) { mutableStateOf(initialPattern?.type ?: PatternType.AMIGURUMI) }
+    var sourceType by remember(formKey) { mutableStateOf(initialPattern?.sourceType ?: PatternSourceType.LINK) }
+    var link by remember(formKey) { mutableStateOf(if (initialPattern?.sourceType == PatternSourceType.LINK) initialPattern?.externalLink ?: "" else "") }
+    var notes by remember(formKey) { mutableStateOf(initialPattern?.notes ?: "") }
+    var fileUri by remember(formKey) { mutableStateOf(initialPattern?.fileUri) }
 
     val pdfPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
@@ -123,23 +129,39 @@ fun PatternFormSheet(
         }
     }
 
+    val dialogTitle = if (isEditing) "Modifica schema" else "Nuovo schema"
+    val confirmLabel = if (isEditing) "Aggiorna schema" else "Salva schema"
+
     BottomSheetForm(
-        title = "Nuovo schema",
+        title = dialogTitle,
         isVisible = true,
         onDismiss = onDismiss,
         onConfirm = {
             if (title.isBlank()) return@BottomSheetForm
-            onSave(
-                title.trim(),
-                type,
-                sourceType,
-                fileUri,
-                link.trim().ifBlank { null },
-                notes.trim(),
-            )
+            if (isEditing && onUpdate != null) {
+                onUpdate(
+                    initialPattern!!.copy(
+                        title = title.trim(),
+                        type = type,
+                        sourceType = sourceType,
+                        fileUri = fileUri,
+                        externalLink = link.trim().ifBlank { null },
+                        notes = notes.trim(),
+                    )
+                )
+            } else {
+                onSave(
+                    title.trim(),
+                    type,
+                    sourceType,
+                    fileUri,
+                    link.trim().ifBlank { null },
+                    notes.trim(),
+                )
+            }
             onDismiss()
         },
-        confirmLabel = "Salva schema",
+        confirmLabel = confirmLabel,
     ) {
         FormTextField(value = title, onValueChange = { title = it }, label = "Titolo *")
         Spacer(modifier = Modifier.height(12.dp))

@@ -36,4 +36,6 @@ class YarnRepository @Inject constructor(
 
     suspend fun getYarnsForProject(projectId: Long): List<YarnEntity> =
         yarnDao.getYarnsForProject(projectId)
+
+    suspend fun getTotalPrice(): Double = yarnDao.getTotalPrice()
 }

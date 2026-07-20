@@ -69,10 +69,19 @@ class ProjectViewModel @Inject constructor(
         }
     }
 
+    private var lastDeletedProject: ProjectEntity? = null
+
     fun deleteProject(project: ProjectEntity) {
         viewModelScope.launch {
+            lastDeletedProject = project
             repository.delete(project)
         }
+    }
+
+    fun undoDeleteProject() {
+        val project = lastDeletedProject ?: return
+        lastDeletedProject = null
+        viewModelScope.launch { repository.insert(project) }
     }
 
     fun linkYarn(projectId: Long, yarnId: Long) {
@@ -99,6 +108,12 @@ class ProjectViewModel @Inject constructor(
     }
 
     suspend fun getPhotos(projectId: Long) = repository.getPhotos(projectId)
+
+    fun deletePhoto(photo: com.tieniilfilo.app.data.local.entity.ProjectPhotoEntity) {
+        viewModelScope.launch {
+            repository.deletePhoto(photo)
+        }
+    }
 
     fun updatePatternLink(projectId: Long, patternId: Long?) {
         viewModelScope.launch {

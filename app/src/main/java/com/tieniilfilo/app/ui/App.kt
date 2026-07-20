@@ -1,6 +1,8 @@
 package com.tieniilfilo.app.ui
 
 import android.util.Log
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -35,6 +37,9 @@ class AppViewModel @Inject constructor(
     val darkMode = preferences.darkMode
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val useDynamicColors = preferences.useDynamicColors
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     fun completeOnboarding() {
         preferences.setOnboardingDone(true)
         viewModelScope.launch { seedManager.seedIfNeeded() }
@@ -47,21 +52,25 @@ fun TieniIlFiloAppContent(
 ) {
     val onboardingDone by viewModel.onboardingDone.collectAsState()
     val darkMode by viewModel.darkMode.collectAsState()
+    val useDynamicColors by viewModel.useDynamicColors.collectAsState()
 
     Log.d("TIENI", "TieniIlFiloAppContent recompose — onboardingDone=$onboardingDone")
 
-    TieniIlFiloTheme(darkTheme = darkMode) {
+    TieniIlFiloTheme(darkTheme = darkMode, dynamicColor = useDynamicColors) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
         ) {
-            when {
-                !onboardingDone -> {
-                    OnboardingScreen(onFinished = viewModel::completeOnboarding)
-                }
-                else -> {
+            Crossfade(
+                targetState = onboardingDone,
+                animationSpec = tween(500),
+                label = "onboardingCrossfade",
+            ) { done ->
+                if (done) {
                     Log.d("TIENI", "Rendering NavGraph")
                     TieniIlFiloNavGraph()
+                } else {
+                    OnboardingScreen(onFinished = viewModel::completeOnboarding)
                 }
             }
         }

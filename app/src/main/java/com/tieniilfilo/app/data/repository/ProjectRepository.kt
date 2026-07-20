@@ -46,6 +46,8 @@ class ProjectRepository @Inject constructor(
 
     fun getCompletedCount(): Flow<Int> = projectDao.getCompletedProjectCount()
 
+    fun getPausedCount(): Flow<Int> = projectDao.getPausedProjectCount()
+
     fun getTotalCount(): Flow<Int> = projectDao.getProjectCount()
 
     suspend fun countByStatus(status: String): Int = projectDao.countByStatus(status)

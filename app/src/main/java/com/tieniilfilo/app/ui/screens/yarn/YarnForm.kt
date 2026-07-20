@@ -7,6 +7,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,17 +18,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Store
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -126,6 +132,7 @@ fun YarnFormSheet(
     var yarnSource by remember(formKey) { mutableStateOf(initialYarn?.yarnSource ?: YarnSource.NEGOZIO_FISICO) }
     var storeName by remember(formKey) { mutableStateOf(initialYarn?.storeName ?: "") }
     var storeLink by remember(formKey) { mutableStateOf(initialYarn?.storeLink ?: "") }
+    var unitPrice by remember(formKey) { mutableStateOf(initialYarn?.unitPrice?.let { "%.2f".format(it).trimEnd('0').trimEnd('.') } ?: "") }
     var notes by remember(formKey) { mutableStateOf(initialYarn?.notes ?: "") }
     var photoPath by remember(formKey) { mutableStateOf(initialYarn?.photoUri) }
 
@@ -197,6 +204,8 @@ fun YarnFormSheet(
                         quantityBallsTotal = quantityBalls.toDoubleOrNull() ?: 0.0,
                         quantityGramsTotal = quantityGrams.toDoubleOrNull() ?: 0.0,
                         quantityMetersTotal = quantityMeters.toDoubleOrNull() ?: 0.0,
+                        unitPrice = unitPrice.toDoubleOrNull(),
+
                         yarnSource = yarnSource,
                         storeName = storeName.trim(),
                         storeLink = storeLink.trim(),
@@ -266,13 +275,15 @@ fun YarnFormSheet(
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Quantità", style = MaterialTheme.typography.labelMedium)
         Spacer(modifier = Modifier.height(6.dp))
-        FormTextField(value = quantityBalls, onValueChange = { quantityBalls = it.filter { c -> c.isDigit() || c == '.' } }, label = "Gomitoli")
+        FormTextField(value = quantityBalls, onValueChange = { quantityBalls = it.filter { c -> c.isDigit() || c == '.' } }, label = "Gomitoli", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
         Spacer(modifier = Modifier.height(6.dp))
-        FormTextField(value = quantityGrams, onValueChange = { quantityGrams = it.filter { c -> c.isDigit() || c == '.' } }, label = "Grammi")
+        FormTextField(value = quantityGrams, onValueChange = { quantityGrams = it.filter { c -> c.isDigit() || c == '.' } }, label = "Grammi", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
         Spacer(modifier = Modifier.height(6.dp))
-        FormTextField(value = quantityMeters, onValueChange = { quantityMeters = it.filter { c -> c.isDigit() || c == '.' } }, label = "Metri")
+        FormTextField(value = quantityMeters, onValueChange = { quantityMeters = it.filter { c -> c.isDigit() || c == '.' } }, label = "Metri", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
 
         Spacer(modifier = Modifier.height(16.dp))
+        FormTextField(value = unitPrice, onValueChange = { unitPrice = it.filter { c -> c.isDigit() || c == '.' } }, label = "Prezzo unitario (€)", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
+        Spacer(modifier = Modifier.height(12.dp))
         Text(text = "Fonte", style = MaterialTheme.typography.labelMedium)
         Spacer(modifier = Modifier.height(6.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

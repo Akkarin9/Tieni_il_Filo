@@ -2,6 +2,7 @@ package com.tieniilfilo.app.ui.screens.pattern
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,7 +18,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material3.AlertDialog
@@ -28,6 +32,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -44,7 +49,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tieniilfilo.app.data.local.entity.PatternEntity
 import com.tieniilfilo.app.data.local.entity.PatternSourceType
+import com.tieniilfilo.app.ui.components.FullScreenImageViewer
 import com.tieniilfilo.app.ui.components.PhotoThumb
 import java.io.File
 
@@ -53,12 +60,16 @@ import java.io.File
 fun PatternDetailScreen(
     patternId: Long,
     onBack: () -> Unit,
+    onEdit: (PatternEntity) -> Unit = {},
+    onDeleteWithUndo: (message: String, undo: () -> Unit) -> Unit = { _, _ -> },
     viewModel: PatternViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val pattern by viewModel.observePattern(patternId).collectAsState(initial = null)
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var viewerUri by remember { mutableStateOf<String?>(null) }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,6 +81,9 @@ fun PatternDetailScreen(
                 },
                 actions = {
                     pattern?.let { pat ->
+                        IconButton(onClick = { onEdit(pat) }) {
+                            Icon(Icons.Default.Edit, contentDescription = "Modifica schema")
+                        }
                         IconButton(onClick = { viewModel.toggleBookmark(pat) }) {
                             Icon(
                                 imageVector = if (pat.isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
@@ -104,7 +118,7 @@ fun PatternDetailScreen(
                     Icon(
                         imageVector = pat.sourceType.toIcon(),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = pat.sourceType.toColor(),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -119,7 +133,20 @@ fun PatternDetailScreen(
 
                 if (pat.sourceType == PatternSourceType.IMAGE && !pat.fileUri.isNullOrBlank()) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    PhotoThumb(path = pat.fileUri, size = 200.dp)
+                    Box {
+                        PhotoThumb(path = pat.fileUri, size = 200.dp, onClick = { viewerUri = pat.fileUri })
+                        IconButton(
+                            onClick = { viewModel.deleteFile(pat) },
+                            modifier = Modifier.align(Alignment.TopEnd),
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Rimuovi immagine",
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                    }
                 }
 
                 if (pat.sourceType == PatternSourceType.PDF && !pat.fileUri.isNullOrBlank()) {
@@ -144,6 +171,15 @@ fun PatternDetailScreen(
                         Icon(Icons.Default.PictureAsPdf, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Apri PDF")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = { viewModel.deleteFile(pat) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Rimuovi PDF")
                     }
                 }
 
@@ -190,6 +226,9 @@ fun PatternDetailScreen(
         )
     }
 
+    viewerUri?.let { FullScreenImageViewer(path = it, onDismiss = { viewerUri = null }) }
+    }
+
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -198,7 +237,11 @@ fun PatternDetailScreen(
             confirmButton = {
                 TextButton(onClick = {
                     showDeleteDialog = false
-                    pattern?.let { viewModel.deletePattern(it) }
+                    val item = pattern
+                    if (item != null) {
+                        viewModel.deletePattern(item)
+                        onDeleteWithUndo("${item.title} eliminato") { viewModel.undoDeletePattern() }
+                    }
                     onBack()
                 }) {
                     Text("Elimina", color = MaterialTheme.colorScheme.error)

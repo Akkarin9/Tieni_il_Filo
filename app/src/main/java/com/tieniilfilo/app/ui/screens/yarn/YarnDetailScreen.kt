@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Link
@@ -51,8 +53,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tieniilfilo.app.data.local.entity.YarnComposition
 import com.tieniilfilo.app.data.local.entity.YarnEntity
 import com.tieniilfilo.app.data.local.entity.YarnSource
+import com.tieniilfilo.app.ui.components.FullScreenImageViewer
 import com.tieniilfilo.app.ui.components.PhotoThumb
 import com.tieniilfilo.app.ui.components.StatusChip
+import com.tieniilfilo.app.ui.theme.FrauncesFontFamily
+import com.tieniilfilo.app.ui.theme.HeroCoral
+import com.tieniilfilo.app.ui.theme.HeroAmber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,14 +66,17 @@ fun YarnDetailScreen(
     yarnId: Long,
     onBack: () -> Unit,
     onEdit: (YarnEntity) -> Unit = {},
+    onDeleteWithUndo: (message: String, undo: () -> Unit) -> Unit = { _, _ -> },
     viewModel: YarnViewModel = hiltViewModel(),
 ) {
     val yarn by viewModel.observeYarn(yarnId).collectAsState(initial = null)
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var viewerUri by remember { mutableStateOf<String?>(null) }
     var sliderValue by remember(yarn?.id, yarn?.quantityUsed) {
         mutableFloatStateOf(yarn?.quantityUsed?.toFloat() ?: 0f)
     }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -98,33 +107,7 @@ fun YarnDetailScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp),
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    val colors = parseColorHexes(y.colorHexes, y.colorHex)
-                    if (colors.isNotEmpty()) {
-                        Row(horizontalArrangement = Arrangement.spacedBy((-8).dp)) {
-                            colors.forEach { hex ->
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .clip(CircleShape)
-                                        .background(Color(hex))
-                                        .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape),
-                                )
-                            }
-                        }
-                    }
-                    StatusChip(
-                        label = y.status.toDisplayString(),
-                        chipColor = y.status.toChipColor(),
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-                PhotoThumb(path = y.photoUri, size = 160.dp)
+                HeroYarnHeader(yarn = y, y.photoUri, onViewPhoto = { viewerUri = y.photoUri }, onDeletePhoto = { viewModel.deletePhoto(y) })
                 Spacer(modifier = Modifier.height(12.dp))
 
                 if (y.brand.isNotEmpty()) {
@@ -220,26 +203,108 @@ fun YarnDetailScreen(
         )
     }
 
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Elimina filato") },
-            text = { Text("Eliminare ${yarn?.name ?: ""}? L'operazione non può essere annullata.") },
-            confirmButton = {
-                TextButton(onClick = {
-                    showDeleteDialog = false
-                    yarn?.let { viewModel.deleteYarn(it) }
-                    onBack()
-                }) {
-                    Text("Elimina", color = MaterialTheme.colorScheme.error)
+        viewerUri?.let { FullScreenImageViewer(path = it, onDismiss = { viewerUri = null }) }
+
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Elimina filato") },
+                text = { Text("Eliminare ${yarn?.name ?: ""}? L'operazione non può essere annullata.") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showDeleteDialog = false
+                        val item = yarn
+                        if (item != null) {
+                            viewModel.deleteYarn(item)
+                            onDeleteWithUndo("${item.name} eliminato") { viewModel.undoDeleteYarn() }
+                        }
+                        onBack()
+                    }) {
+                        Text("Elimina", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("Annulla")
+                    }
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun HeroYarnHeader(
+    yarn: com.tieniilfilo.app.data.local.entity.YarnEntity,
+    photoUri: String?,
+    onViewPhoto: () -> Unit,
+    onDeletePhoto: () -> Unit,
+) {
+    val colors = parseColorHexes(yarn.colorHexes, yarn.colorHex)
+    val heroColor = if (colors.isNotEmpty()) Color(colors.first()) else HeroCoral
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(220.dp)
+            .drawBehind {
+                drawRect(
+                    brush = androidx.compose.ui.graphics.Brush.sweepGradient(
+                        colors = listOf(heroColor, heroColor.copy(alpha = 0.6f), HeroAmber, HeroCoral, heroColor),
+                    ),
+                )
+            }
+            .padding(16.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (!photoUri.isNullOrBlank()) {
+                Box {
+                    PhotoThumb(path = photoUri, size = 120.dp, onClick = onViewPhoto)
+                    IconButton(
+                        onClick = onDeletePhoto,
+                        modifier = Modifier.align(Alignment.TopEnd),
+                    ) {
+                        Icon(androidx.compose.material.icons.Icons.Default.Close, contentDescription = "Rimuovi foto", tint = androidx.compose.material3.MaterialTheme.colorScheme.error, modifier = Modifier.size(18.dp))
+                    }
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Annulla")
+                androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.width(16.dp))
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = yarn.name,
+                    style = androidx.compose.material3.MaterialTheme.typography.headlineMedium.copy(fontFamily = FrauncesFontFamily),
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+                )
+                if (yarn.brand.isNotEmpty()) {
+                    Text(
+                        text = yarn.brand,
+                        style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                        color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    )
                 }
-            },
-        )
+                androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.height(8.dp))
+                if (colors.isNotEmpty()) {
+                    Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy((-6).dp)) {
+                        colors.take(5).forEach { hex ->
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(androidx.compose.foundation.shape.CircleShape)
+                                    .background(Color(hex))
+                                    .border(2.dp, androidx.compose.material3.MaterialTheme.colorScheme.surface, androidx.compose.foundation.shape.CircleShape),
+                            )
+                        }
+                    }
+                }
+            }
+            StatusChip(
+                label = yarn.status.toDisplayString(),
+                chipColor = yarn.status.toChipColor(),
+            )
+        }
     }
 }
 

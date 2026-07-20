@@ -51,6 +51,9 @@ interface ProjectDao {
     @Query("SELECT COUNT(*) FROM projects WHERE status = 'COMPLETATO'")
     fun getCompletedProjectCount(): Flow<Int>
 
+    @Query("SELECT COUNT(*) FROM projects WHERE status = 'IN_PAUSA'")
+    fun getPausedProjectCount(): Flow<Int>
+
     // Project photos
     @Query("SELECT * FROM project_photos WHERE project_id = :projectId ORDER BY taken_at ASC")
     suspend fun getPhotosForProject(projectId: Long): List<ProjectPhotoEntity>

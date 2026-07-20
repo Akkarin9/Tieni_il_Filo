@@ -3,6 +3,8 @@ package com.tieniilfilo.app.ui.screens.onboarding
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,13 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Inventory2
-import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +50,7 @@ fun OnboardingScreen(onFinished: () -> Unit) {
     Log.d("TIENI", "OnboardingScreen rendering")
 
     val pages = listOf(
-        OnboardingPage(Icons.Default.Spa, "Benvenuta in Tieni il Filo", "L'app calda e semplice per organizzare filati, uncinetti e progetti di uncinetto."),
+        OnboardingPage(Icons.Rounded.Palette, "Benvenuta in Tieni il Filo", "L'app calda e semplice per organizzare filati, uncinetti e progetti di uncinetto."),
         OnboardingPage(Icons.Default.Inventory2, "Il tuo magazzino", "Registra filati con colore, quantità e stato. Gli uncinetti stanno nella sezione Filati."),
         OnboardingPage(Icons.Default.AutoAwesome, "Progetti e schemi", "Segui i lavori in corso, completa con confetti, e tieni gli schemi preferiti a portata di mano."),
     )
@@ -89,12 +92,19 @@ fun OnboardingScreen(onFinished: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 repeat(pages.size) { index ->
+                    val isActive = pagerState.currentPage == index
+                    val dotWidthState = animateDpAsState(
+                        targetValue = if (isActive) 24.dp else 8.dp,
+                        animationSpec = spring(dampingRatio = 0.7f, stiffness = 300f),
+                        label = "dotWidth",
+                    )
                     Box(
                         modifier = Modifier
-                            .size(if (pagerState.currentPage == index) 10.dp else 8.dp)
+                            .width(dotWidthState.value)
+                            .height(8.dp)
                             .clip(CircleShape)
                             .background(
-                                if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary
+                                if (isActive) MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
                             ),
                     )

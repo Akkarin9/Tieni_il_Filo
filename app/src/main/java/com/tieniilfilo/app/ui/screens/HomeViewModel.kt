@@ -34,9 +34,8 @@ class HomeViewModel @Inject constructor(
     val completedProjectCount: StateFlow<Int> = projectRepository.getCompletedCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
-    val pausedProject: StateFlow<ProjectEntity?> = projectRepository.getProjectsByStatus("IN_PAUSA")
-        .map { it.firstOrNull() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    val activeProjects: StateFlow<List<ProjectEntity>> = projectRepository.getProjectsByStatus("IN_CORSO")
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val distinctYarnColors: StateFlow<List<Int>> = yarnRepository.getAllYarns()
         .map { yarns ->

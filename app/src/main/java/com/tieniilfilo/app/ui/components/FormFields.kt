@@ -40,6 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -49,6 +52,7 @@ fun FormTextField(
     label: String,
     modifier: Modifier = Modifier,
     singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     OutlinedTextField(
         value = value,
@@ -57,6 +61,7 @@ fun FormTextField(
         modifier = modifier.fillMaxWidth(),
         singleLine = singleLine,
         shape = MaterialTheme.shapes.small,
+        keyboardOptions = keyboardOptions,
     )
 }
 

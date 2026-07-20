@@ -7,6 +7,7 @@ import com.tieniilfilo.app.data.local.entity.YarnEntity
 import com.tieniilfilo.app.data.local.entity.YarnSource
 import com.tieniilfilo.app.data.local.entity.YarnStatus
 import com.tieniilfilo.app.data.repository.YarnRepository
+import com.tieniilfilo.app.util.PhotoStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,6 +28,7 @@ data class YarnFilter(
 @HiltViewModel
 class YarnViewModel @Inject constructor(
     private val repository: YarnRepository,
+    private val photoStorage: PhotoStorage,
 ) : ViewModel() {
 
     private val _filter = MutableStateFlow(YarnFilter())
@@ -83,6 +85,7 @@ class YarnViewModel @Inject constructor(
         storeLink: String,
         notes: String,
         photoUri: String?,
+        unitPrice: Double? = null,
     ) {
         viewModelScope.launch {
             repository.insert(
@@ -103,6 +106,7 @@ class YarnViewModel @Inject constructor(
                     storeLink = storeLink,
                     notes = notes,
                     photoUri = photoUri,
+                    unitPrice = unitPrice,
                 )
             )
         }
@@ -110,6 +114,10 @@ class YarnViewModel @Inject constructor(
 
     fun updateYarn(yarn: YarnEntity) {
         viewModelScope.launch {
+            val oldYarn = repository.getYarnById(yarn.id)
+            if (oldYarn != null && oldYarn.photoUri != yarn.photoUri) {
+                photoStorage.deleteIfExists(oldYarn.photoUri)
+            }
             val totalQty = yarn.quantityBallsTotal + yarn.quantityGramsTotal + yarn.quantityMetersTotal
             val newStatus = when {
                 yarn.quantityUsed >= 100.0 && totalQty > 0 -> YarnStatus.ESAURITO
@@ -120,10 +128,26 @@ class YarnViewModel @Inject constructor(
         }
     }
 
+    fun deletePhoto(yarn: YarnEntity) {
+        viewModelScope.launch {
+            photoStorage.deleteIfExists(yarn.photoUri)
+            repository.update(yarn.copy(photoUri = null))
+        }
+    }
+
+    private var lastDeletedYarn: YarnEntity? = null
+
     fun deleteYarn(yarn: YarnEntity) {
         viewModelScope.launch {
+            lastDeletedYarn = yarn
             repository.delete(yarn)
         }
+    }
+
+    fun undoDeleteYarn() {
+        val yarn = lastDeletedYarn ?: return
+        lastDeletedYarn = null
+        viewModelScope.launch { repository.insert(yarn) }
     }
 
     fun updateQuantityUsed(yarn: YarnEntity, usedPercent: Double) {

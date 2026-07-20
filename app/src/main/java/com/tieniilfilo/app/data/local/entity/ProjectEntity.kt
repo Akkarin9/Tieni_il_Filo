@@ -15,4 +15,6 @@ data class ProjectEntity(
     @ColumnInfo(name = "pattern_id") val patternId: Long? = null,
     @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "is_sample") val isSample: Boolean = false,
+    @ColumnInfo(name = "target_deadline") val targetDeadline: Long? = null,
+    @ColumnInfo(name = "rating") val rating: Int = 0,
 )

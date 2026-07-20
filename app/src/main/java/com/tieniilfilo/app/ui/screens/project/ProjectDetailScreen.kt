@@ -27,6 +27,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Celebration
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.AlertDialog
@@ -62,6 +63,7 @@ import com.tieniilfilo.app.data.local.entity.PatternEntity
 import com.tieniilfilo.app.data.local.entity.ProjectPhotoEntity
 import com.tieniilfilo.app.data.local.entity.ProjectStatus
 import com.tieniilfilo.app.ui.components.ConfettiOverlay
+import com.tieniilfilo.app.ui.components.FullScreenImageViewer
 import com.tieniilfilo.app.ui.components.PhotoThumb
 import com.tieniilfilo.app.ui.components.StatusChip
 import com.tieniilfilo.app.util.PhotoStorage
@@ -75,6 +77,8 @@ fun ProjectDetailScreen(
     projectId: Long,
     onBack: () -> Unit,
     onPatternClick: (Long) -> Unit = {},
+    onEdit: (com.tieniilfilo.app.data.local.entity.ProjectEntity) -> Unit = {},
+    onDeleteWithUndo: (message: String, undo: () -> Unit) -> Unit = { _, _ -> },
     viewModel: ProjectViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -85,6 +89,7 @@ fun ProjectDetailScreen(
     var photos by remember { mutableStateOf<List<ProjectPhotoEntity>>(emptyList()) }
     var showConfetti by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var viewerUri by remember { mutableStateOf<String?>(null) }
     val view = LocalView.current
 
     val picker = rememberLauncherForActivityResult(
@@ -161,6 +166,9 @@ fun ProjectDetailScreen(
                         }
                     },
                     actions = {
+                        IconButton(onClick = { project?.let(onEdit) }) {
+                            Icon(Icons.Default.Edit, contentDescription = "Modifica progetto")
+                        }
                         IconButton(onClick = { showDeleteDialog = true }) {
                             Icon(Icons.Default.Delete, contentDescription = "Elimina progetto", tint = MaterialTheme.colorScheme.error)
                         }
@@ -267,7 +275,20 @@ fun ProjectDetailScreen(
                         LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             items(photos) { photo ->
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    PhotoThumb(path = photo.photoUri, size = 120.dp)
+                                    Box {
+                                        PhotoThumb(path = photo.photoUri, size = 120.dp, onClick = { viewerUri = photo.photoUri })
+                                        IconButton(
+                                            onClick = { viewModel.deletePhoto(photo); photos = photos - photo },
+                                            modifier = Modifier.align(Alignment.TopEnd),
+                                        ) {
+                                            Icon(
+                                                Icons.Default.Delete,
+                                                contentDescription = "Elimina foto",
+                                                tint = MaterialTheme.colorScheme.error,
+                                                modifier = Modifier.size(18.dp),
+                                            )
+                                        }
+                                    }
                                     Text(
                                         text = formatDate(photo.takenAt),
                                         style = MaterialTheme.typography.labelSmall,
@@ -307,6 +328,8 @@ fun ProjectDetailScreen(
             )
         }
 
+        viewerUri?.let { FullScreenImageViewer(path = it, onDismiss = { viewerUri = null }) }
+
         ConfettiOverlay(
             active = showConfetti,
             onFinished = { showConfetti = false },
@@ -320,7 +343,11 @@ fun ProjectDetailScreen(
                 confirmButton = {
                     TextButton(onClick = {
                         showDeleteDialog = false
-                        project?.let { viewModel.deleteProject(it) }
+                        val item = project
+                        if (item != null) {
+                            viewModel.deleteProject(item)
+                            onDeleteWithUndo("${item.name} eliminato") { viewModel.undoDeleteProject() }
+                        }
                         onBack()
                     }) {
                         Text("Elimina", color = MaterialTheme.colorScheme.error)

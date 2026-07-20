@@ -26,4 +26,6 @@ data class YarnEntity(
     @ColumnInfo(name = "yarn_source") val yarnSource: YarnSource = YarnSource.NEGOZIO_FISICO,
     @ColumnInfo(name = "store_name") val storeName: String = "",
     @ColumnInfo(name = "store_link") val storeLink: String = "",
+    @ColumnInfo(name = "unit_price") val unitPrice: Double? = null,
+    @ColumnInfo(name = "purchase_date") val purchaseDate: Long? = null,
 )

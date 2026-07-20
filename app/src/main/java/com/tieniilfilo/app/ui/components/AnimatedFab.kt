@@ -1,6 +1,5 @@
 package com.tieniilfilo.app.ui.components
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -21,7 +20,7 @@ import androidx.compose.ui.unit.dp
 data class FabState(
     val icon: ImageVector,
     val label: String,
-    val color: Long,
+    val rotate: Boolean = false,
 )
 
 @Composable
@@ -31,7 +30,7 @@ fun AnimatedFab(
     modifier: Modifier = Modifier,
 ) {
     val rotation by animateFloatAsState(
-        targetValue = if (state.label == "Progetti") 180f else 0f,
+        targetValue = if (state.rotate) 180f else 0f,
         animationSpec = spring(),
         label = "fabRotation",
     )
@@ -50,7 +49,7 @@ fun AnimatedFab(
             Icon(
                 imageVector = icon,
                 contentDescription = state.label,
-                modifier = Modifier.rotate(rotation),
+                modifier = Modifier.padding(12.dp).rotate(rotation),
             )
         }
     }
@@ -59,5 +58,4 @@ fun AnimatedFab(
 val DefaultFabState = FabState(
     icon = Icons.Default.Add,
     label = "",
-    color = 0xFF000000,
 )

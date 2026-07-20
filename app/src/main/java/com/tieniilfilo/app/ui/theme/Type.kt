@@ -15,34 +15,47 @@ val NunitoFontFamily = FontFamily(
     Font(R.font.nunito, FontWeight.Bold),
 )
 
+val FrauncesFontFamily = FontFamily(
+    Font(R.font.fraunces, FontWeight.Normal),
+    Font(R.font.fraunces, FontWeight.Medium),
+    Font(R.font.fraunces, FontWeight.SemiBold),
+    Font(R.font.fraunces, FontWeight.Bold),
+)
+
 val TieniIlFiloTypography = Typography(
     displayLarge = TextStyle(
-        fontFamily = NunitoFontFamily,
+        fontFamily = FrauncesFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 57.sp,
         lineHeight = 64.sp,
         letterSpacing = (-0.25).sp,
     ),
+    displayMedium = TextStyle(
+        fontFamily = FrauncesFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 40.sp,
+        lineHeight = 48.sp,
+    ),
     headlineLarge = TextStyle(
-        fontFamily = NunitoFontFamily,
+        fontFamily = FrauncesFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 32.sp,
         lineHeight = 40.sp,
     ),
     headlineMedium = TextStyle(
-        fontFamily = NunitoFontFamily,
+        fontFamily = FrauncesFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 28.sp,
         lineHeight = 36.sp,
     ),
     headlineSmall = TextStyle(
-        fontFamily = NunitoFontFamily,
+        fontFamily = FrauncesFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 32.sp,
     ),
     titleLarge = TextStyle(
-        fontFamily = NunitoFontFamily,
+        fontFamily = FrauncesFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 22.sp,
         lineHeight = 28.sp,

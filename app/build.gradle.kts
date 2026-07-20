@@ -69,6 +69,8 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     implementation(libs.navigation.compose)
     implementation(libs.coil.compose)
     implementation(libs.gson)

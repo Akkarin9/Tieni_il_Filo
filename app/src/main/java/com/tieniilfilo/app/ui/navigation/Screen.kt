@@ -1,17 +1,19 @@
 package com.tieniilfilo.app.ui.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Inventory2
-import androidx.compose.material.icons.automirrored.filled.LibraryBooks
-import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Inventory2
+import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.rounded.AutoStories
 import androidx.compose.ui.graphics.vector.ImageVector
 
-sealed class Screen(val route: String) {
+sealed class Screen(val route: String, val navRoute: String = route) {
     data object Home : Screen("home")
     data object Yarns : Screen("yarns")
     data object Hooks : Screen("hooks")
-    data object Projects : Screen("projects")
+    data object Projects : Screen("projects?status={status}", "projects") {
+        fun createRoute(status: String? = null) = if (status == null) "projects" else "projects?status=$status"
+    }
     data object Patterns : Screen("patterns")
     data object YarnDetail : Screen("yarn_detail/{id}") {
         fun createRoute(id: Long) = "yarn_detail/$id"
@@ -34,8 +36,8 @@ data class BottomNavItem(
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem(Screen.Home, Icons.Default.Home, "Home"),
-    BottomNavItem(Screen.Yarns, Icons.Default.Inventory2, "Filati"),
-    BottomNavItem(Screen.Projects, Icons.Default.Spa, "Progetti"),
-    BottomNavItem(Screen.Patterns, Icons.AutoMirrored.Filled.LibraryBooks, "Schemi"),
+    BottomNavItem(Screen.Home, Icons.Rounded.Home, "Home"),
+    BottomNavItem(Screen.Yarns, Icons.Rounded.Inventory2, "Filati"),
+    BottomNavItem(Screen.Projects, Icons.Rounded.Palette, "Progetti"),
+    BottomNavItem(Screen.Patterns, Icons.Rounded.AutoStories, "Schemi"),
 )

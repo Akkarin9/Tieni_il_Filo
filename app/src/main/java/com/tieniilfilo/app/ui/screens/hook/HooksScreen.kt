@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Handyman
+import androidx.compose.material.icons.rounded.Handyman
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +34,7 @@ import com.tieniilfilo.app.ui.components.EmptyState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HooksScreen(
+    onAddClick: () -> Unit = {},
     viewModel: HookViewModel = hiltViewModel(),
 ) {
     val hooks by viewModel.hooks.collectAsState()
@@ -46,9 +47,11 @@ fun HooksScreen(
         if (hooks.isEmpty()) {
             EmptyState(
                 modifier = Modifier.padding(padding),
-                icon = Icons.Default.Handyman,
+                icon = Icons.Rounded.Handyman,
                 title = "Nessun uncinetto",
                 subtitle = "Aggiungi il tuo primo uncinetto per iniziare",
+                actionLabel = "Aggiungi uncinetto",
+                onActionClick = onAddClick,
             )
         } else {
             LazyColumn(

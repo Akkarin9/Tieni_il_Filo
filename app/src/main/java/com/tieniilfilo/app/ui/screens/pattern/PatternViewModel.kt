@@ -6,6 +6,7 @@ import com.tieniilfilo.app.data.local.entity.PatternEntity
 import com.tieniilfilo.app.data.local.entity.PatternSourceType
 import com.tieniilfilo.app.data.local.entity.PatternType
 import com.tieniilfilo.app.data.repository.PatternRepository
+import com.tieniilfilo.app.util.PhotoStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PatternViewModel @Inject constructor(
     private val repository: PatternRepository,
+    private val photoStorage: PhotoStorage,
 ) : ViewModel() {
 
     val allPatterns: StateFlow<List<PatternEntity>> = repository.getAllPatterns()
@@ -50,7 +52,18 @@ class PatternViewModel @Inject constructor(
 
     fun updatePattern(pattern: PatternEntity) {
         viewModelScope.launch {
+            val oldPattern = repository.getPatternById(pattern.id)
+            if (oldPattern != null && oldPattern.fileUri != pattern.fileUri) {
+                photoStorage.deleteIfExists(oldPattern.fileUri)
+            }
             repository.update(pattern)
+        }
+    }
+
+    fun deleteFile(pattern: PatternEntity) {
+        viewModelScope.launch {
+            photoStorage.deleteIfExists(pattern.fileUri)
+            repository.update(pattern.copy(fileUri = null))
         }
     }
 
@@ -60,9 +73,18 @@ class PatternViewModel @Inject constructor(
         }
     }
 
+    private var lastDeletedPattern: PatternEntity? = null
+
     fun deletePattern(pattern: PatternEntity) {
         viewModelScope.launch {
+            lastDeletedPattern = pattern
             repository.delete(pattern)
         }
+    }
+
+    fun undoDeletePattern() {
+        val pattern = lastDeletedPattern ?: return
+        lastDeletedPattern = null
+        viewModelScope.launch { repository.insert(pattern) }
     }
 }

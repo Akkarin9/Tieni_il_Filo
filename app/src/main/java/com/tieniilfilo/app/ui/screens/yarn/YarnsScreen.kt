@@ -15,19 +15,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,6 +50,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tieniilfilo.app.data.local.entity.YarnComposition
@@ -56,28 +59,42 @@ import com.tieniilfilo.app.data.local.entity.YarnEntity
 import com.tieniilfilo.app.data.local.entity.YarnStatus
 import com.tieniilfilo.app.ui.components.ChipColor
 import com.tieniilfilo.app.ui.components.EmptyState
+import com.tieniilfilo.app.ui.components.FullScreenImageViewer
 import com.tieniilfilo.app.ui.components.PhotoThumb
 import com.tieniilfilo.app.ui.components.StatusChip
+import com.tieniilfilo.app.ui.theme.AppIcons
+import com.tieniilfilo.app.ui.theme.pressAnimation
+import com.tieniilfilo.app.ui.theme.staggerEnter
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun YarnsScreen(
     onYarnClick: (Long) -> Unit,
     onNavigateToHooks: () -> Unit,
+    onAddClick: () -> Unit = {},
     viewModel: YarnViewModel = hiltViewModel(),
 ) {
     val filter by viewModel.filter.collectAsState()
     val yarns by viewModel.filteredYarns.collectAsState()
     var searchExpanded by remember { mutableStateOf(false) }
     var showFilters by remember { mutableStateOf(false) }
+    var viewerUri by remember { mutableStateOf<String?>(null) }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Filati") },
                 actions = {
-                    IconButton(onClick = onNavigateToHooks) {
-                        Icon(Icons.Default.Spa, contentDescription = "Uncinetti")
+                    Row(
+                        modifier = Modifier
+                            .clickable(onClick = onNavigateToHooks)
+                            .padding(horizontal = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(AppIcons.CrochetHook, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Uncinetti", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                     }
                 },
             )
@@ -164,22 +181,30 @@ fun YarnsScreen(
                     icon = Icons.Default.FilterList,
                     title = "Nessun filato trovato",
                     subtitle = "Prova a cambiare i filtri o aggiungi un nuovo filato",
+                    actionLabel = "Aggiungi filato",
+                    onActionClick = onAddClick,
                 )
             } else {
                 LazyColumn(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    items(yarns, key = { it.id }) { yarn ->
-                        YarnListItem(
-                            yarn = yarn,
-                            onClick = { onYarnClick(yarn.id) },
-                        )
+                    itemsIndexed(yarns, key = { _, it -> it.id }) { index, yarn ->
+                        AnimatedVisibility(visible = true, enter = staggerEnter(index)) {
+                            YarnListItem(
+                                yarn = yarn,
+                                onClick = { onYarnClick(yarn.id) },
+                                onPhotoClick = { viewerUri = it },
+                            )
+                        }
                     }
                     item { Spacer(modifier = Modifier.height(80.dp)) }
                 }
             }
         }
+    }
+
+        viewerUri?.let { FullScreenImageViewer(path = it, onDismiss = { viewerUri = null }) }
     }
 }
 
@@ -187,12 +212,17 @@ fun YarnsScreen(
 fun YarnListItem(
     yarn: YarnEntity,
     onClick: () -> Unit,
+    onPhotoClick: (String) -> Unit = {},
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize()
-            .clickable(onClick = onClick),
+            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
+            .pressAnimation(isPressed),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
@@ -200,14 +230,34 @@ fun YarnListItem(
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            val listColors = parseColorHexes(yarn.colorHexes, yarn.colorHex)
             if (!yarn.photoUri.isNullOrBlank()) {
-                PhotoThumb(path = yarn.photoUri, size = 48.dp)
+                Box(modifier = Modifier.size(48.dp)) {
+                    PhotoThumb(path = yarn.photoUri, size = 48.dp, onClick = { onPhotoClick(yarn.photoUri) })
+                    if (listColors.size > 1) {
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .offset(x = 2.dp, y = 2.dp),
+                            horizontalArrangement = Arrangement.spacedBy((-4).dp),
+                        ) {
+                            listColors.take(3).forEach { hex ->
+                                Box(
+                                    modifier = Modifier
+                                        .size(14.dp)
+                                        .clip(CircleShape)
+                                        .background(Color(hex))
+                                        .border(1.5.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                                )
+                            }
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.width(12.dp))
             } else {
-                val colors = parseColorHexes(yarn.colorHexes, yarn.colorHex)
-                if (colors.isNotEmpty()) {
+                if (listColors.isNotEmpty()) {
                     Row(horizontalArrangement = Arrangement.spacedBy((-6).dp)) {
-                        colors.take(3).forEach { hex ->
+                        listColors.take(3).forEach { hex ->
                             Box(
                                 modifier = Modifier
                                     .size(30.dp)

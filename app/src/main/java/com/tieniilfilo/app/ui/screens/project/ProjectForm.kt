@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tieniilfilo.app.data.local.entity.PatternEntity
+import com.tieniilfilo.app.data.local.entity.ProjectEntity
 import com.tieniilfilo.app.data.local.entity.ProjectStatus
 import com.tieniilfilo.app.ui.components.BottomSheetForm
 import com.tieniilfilo.app.ui.components.ChipSelector
@@ -37,28 +38,48 @@ import com.tieniilfilo.app.ui.components.FormTextField
 fun ProjectFormSheet(
     isVisible: Boolean,
     onDismiss: () -> Unit,
+    initialProject: ProjectEntity? = null,
     onSave: (name: String, status: ProjectStatus, notes: String, patternId: Long?) -> Unit,
+    onUpdate: ((ProjectEntity) -> Unit)? = null,
     allPatterns: List<PatternEntity> = emptyList(),
 ) {
     if (!isVisible) return
 
-    var name by remember { mutableStateOf("") }
-    var status by remember { mutableStateOf(ProjectStatus.DA_INIZIARE) }
-    var notes by remember { mutableStateOf("") }
-    var selectedPatternId by remember { mutableStateOf<Long?>(null) }
+    val isEditing = initialProject != null
+    val formKey = initialProject?.id ?: 0L
+
+    var name by remember(formKey) { mutableStateOf(initialProject?.name ?: "") }
+    var status by remember(formKey) { mutableStateOf(initialProject?.status ?: ProjectStatus.DA_INIZIARE) }
+    var deadline by remember(formKey) { mutableStateOf(initialProject?.targetDeadline?.let { formatDate(it) } ?: "") }
+    var notes by remember(formKey) { mutableStateOf(initialProject?.notes ?: "") }
+    var selectedPatternId by remember(formKey) { mutableStateOf(initialProject?.patternId) }
     var showPatternPicker by remember { mutableStateOf(false) }
     val selectedPattern = allPatterns.find { it.id == selectedPatternId }
 
+    val title = if (isEditing) "Modifica progetto" else "Nuovo progetto"
+    val confirmLabel = if (isEditing) "Aggiorna progetto" else "Salva progetto"
+
     BottomSheetForm(
-        title = "Nuovo progetto",
+        title = title,
         isVisible = true,
         onDismiss = onDismiss,
         onConfirm = {
             if (name.isBlank()) return@BottomSheetForm
-            onSave(name.trim(), status, notes.trim(), selectedPatternId)
+            if (isEditing && onUpdate != null) {
+                onUpdate(
+                    initialProject!!.copy(
+                        name = name.trim(),
+                        status = status,
+                        notes = notes.trim(),
+                        patternId = selectedPatternId,
+                    )
+                )
+            } else {
+                onSave(name.trim(), status, notes.trim(), selectedPatternId)
+            }
             onDismiss()
         },
-        confirmLabel = "Salva progetto",
+        confirmLabel = confirmLabel,
     ) {
         FormTextField(value = name, onValueChange = { name = it }, label = "Nome *")
         Spacer(modifier = Modifier.height(12.dp))

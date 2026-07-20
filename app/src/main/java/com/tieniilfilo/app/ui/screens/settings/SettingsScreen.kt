@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Download
@@ -58,7 +59,12 @@ class SettingsViewModel @Inject constructor(
     val darkMode = preferences.darkMode
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val useDynamicColors = preferences.useDynamicColors
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     fun setDarkMode(enabled: Boolean) = preferences.setDarkMode(enabled)
+
+    fun setUseDynamicColors(enabled: Boolean) = preferences.setUseDynamicColors(enabled)
 
     suspend fun export(uri: Uri): Boolean = backupManager.exportToUri(uri)
 
@@ -76,6 +82,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val darkMode by viewModel.darkMode.collectAsState()
+    val dynamicColors by viewModel.useDynamicColors.collectAsState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -137,6 +144,27 @@ fun SettingsScreen(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                SettingsCard {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.setUseDynamicColors(!dynamicColors) }
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("Colori dinamici", style = MaterialTheme.typography.titleSmall)
+                            Text("Sfondo wallpaper (Android 12+)", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        Switch(checked = dynamicColors, onCheckedChange = { viewModel.setUseDynamicColors(it) })
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+            }
 
             SettingsCard {
                 Row(

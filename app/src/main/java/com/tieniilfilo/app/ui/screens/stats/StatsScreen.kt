@@ -20,20 +20,27 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tieniilfilo.app.ui.components.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatsScreen() {
-    val yarnCount = 5
-    val hooksCount = 4
-    val activeProjects = 2
-    val completedProjects = 1
-    val pausedProjects = 1
+fun StatsScreen(
+    viewModel: StatsViewModel = hiltViewModel(),
+) {
+    val yarnCount by viewModel.yarnCount.collectAsState()
+    val hooksCount by viewModel.hookCount.collectAsState()
+    val activeProjects by viewModel.activeProjects.collectAsState()
+    val completedProjects by viewModel.completedProjects.collectAsState()
+    val pausedProjects by viewModel.pausedProjects.collectAsState()
+    val totalPrice by viewModel.totalPrice.collectAsState()
+    val totalProjects = activeProjects + completedProjects + pausedProjects
 
     Scaffold(
         topBar = {
@@ -76,22 +83,53 @@ fun StatsScreen() {
                 )
                 StatBox(
                     modifier = Modifier.weight(1f),
+                    label = "In pausa",
+                    value = "$pausedProjects",
+                    color = Color(0xFFFFD966),
+                )
+                StatBox(
+                    modifier = Modifier.weight(1f),
                     label = "Completati",
                     value = "$completedProjects",
                     color = Color(0xFFF4C2C2),
                 )
             }
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = "Colore più usato",
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "La tua palette riflette il tuo stile unico. Continua a creare!",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+
+            if (totalPrice > 0) {
+                Spacer(modifier = Modifier.height(12.dp))
+                StatBox(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Valore magazzino",
+                    value = "€%.2f".format(totalPrice),
+                    color = Color(0xFFC2E0C6),
+                )
+            }
+
+            if (totalProjects > 0) {
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Progetti",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Hai $totalProjects progetti in totale. Continua così!",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Nessun dato ancora",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Inizia ad aggiungere filati e progetti per vedere le statistiche!",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }

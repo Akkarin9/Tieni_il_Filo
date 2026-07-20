@@ -52,4 +52,7 @@ interface YarnDao {
 
     @Query("SELECT * FROM yarns WHERE id IN (SELECT yarn_id FROM project_yarn_cross_ref WHERE project_id = :projectId)")
     suspend fun getYarnsForProject(projectId: Long): List<YarnEntity>
+
+    @Query("SELECT COALESCE(SUM(unit_price), 0) FROM yarns WHERE unit_price IS NOT NULL AND is_wishlist = 0")
+    suspend fun getTotalPrice(): Double
 }
