@@ -93,6 +93,12 @@ fun HomeScreen(
     val activeProjectList by viewModel.activeProjects.collectAsState()
     val yarnColors by viewModel.distinctYarnColors.collectAsState()
 
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .warmGradientMesh(),
+    ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -140,6 +146,7 @@ fun HomeScreen(
 
         item { Spacer(modifier = Modifier.height(16.dp)) }
     }
+    }
 }
 
 @Composable
@@ -151,27 +158,14 @@ private fun GreetingBanner(onSettingsClick: () -> Unit) {
         label = "sparkle",
     )
 
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 64.dp)
-            .warmGradientMesh()
-            .drawWithContent {
-                drawContent()
-                val sparkleSize = 3.dp.toPx()
-                drawCircle(Color(sparkleAlpha, 0.78f, 0.46f, 0.2f), sparkleSize * 2, center = center.copy(x = size.width * 0.8f, y = size.height * 0.5f))
-                drawCircle(Color(0.92f, 0.72f, 0.32f, sparkleAlpha), sparkleSize * 1.5f, center = center.copy(x = size.width * 0.9f, y = size.height * 0.5f))
-            }
-            .padding(start = 8.dp, end = 8.dp),
+            .padding(start = 8.dp, end = 8.dp, top = 4.dp),
+        horizontalArrangement = Arrangement.End,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.Top,
-        ) {
-            IconButton(onClick = onSettingsClick) {
-                Icon(Icons.Rounded.Settings, contentDescription = "Impostazioni", tint = MaterialTheme.colorScheme.primary)
-            }
+        IconButton(onClick = onSettingsClick) {
+            Icon(Icons.Rounded.Settings, contentDescription = "Impostazioni", tint = MaterialTheme.colorScheme.primary)
         }
     }
 }

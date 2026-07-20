@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.collectAsState
@@ -151,6 +152,7 @@ fun TieniIlFiloNavGraph() {
                             navController.navigate(Screen.Hooks.route)
                         },
                         onAddClick = { showYarnAddForm = true },
+                        onPhotoDelete = { yarn -> yarnVm.deletePhoto(yarn) },
                         viewModel = yarnVm,
                     )
                 }
@@ -173,7 +175,7 @@ fun TieniIlFiloNavGraph() {
                         onEdit = { yarn -> yarnToEdit = yarn },
                         onDeleteWithUndo = { msg, undo ->
                             scope.launch {
-                                val result = snackbarHostState.showSnackbar(msg, "ANNULLA")
+                                val result = snackbarHostState.showSnackbar(msg, "ANNULLA", duration = SnackbarDuration.Long)
                                 if (result == SnackbarResult.ActionPerformed) undo()
                             }
                         },
@@ -217,7 +219,7 @@ fun TieniIlFiloNavGraph() {
                         onEdit = { projectToEdit = it },
                         onDeleteWithUndo = { msg, undo ->
                             scope.launch {
-                                val result = snackbarHostState.showSnackbar(msg, "ANNULLA")
+                                val result = snackbarHostState.showSnackbar(msg, "ANNULLA", duration = SnackbarDuration.Long)
                                 if (result == SnackbarResult.ActionPerformed) undo()
                             }
                         },
@@ -246,7 +248,7 @@ fun TieniIlFiloNavGraph() {
                         onEdit = { patternToEdit = it },
                         onDeleteWithUndo = { msg, undo ->
                             scope.launch {
-                                val result = snackbarHostState.showSnackbar(msg, "ANNULLA")
+                                val result = snackbarHostState.showSnackbar(msg, "ANNULLA", duration = SnackbarDuration.Long)
                                 if (result == SnackbarResult.ActionPerformed) undo()
                             }
                         },

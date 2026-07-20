@@ -36,9 +36,10 @@ fun Modifier.warmGradientMesh(): Modifier {
         label = "meshPhase3",
     )
     return drawBehind {
-        drawWarmGradientCircle(size.width, size.height, HeroCoral.copy(alpha = 0.85f), phase1, 0.4f, 0.4f, 0.4f)
-        drawWarmGradientCircle(size.width, size.height, Color(0xFFFFD9CC).copy(alpha = 0.75f), phase2, 0.35f, 0.5f, 0.5f)
-        drawWarmGradientCircle(size.width, size.height, HeroAmber.copy(alpha = 0.8f), phase3, 0.3f, 0.6f, 0.6f)
+        drawRect(color = Color(0xFFFFF8F0)) // solid base to ensure full opacity
+        drawWarmGradientCircle(size.width, size.height, HeroCoral.copy(alpha = 1f), phase1, 0.4f, 0.3f, 0.3f)
+        drawWarmGradientCircle(size.width, size.height, Color(0xFFFFD9CC).copy(alpha = 0.9f), phase2, 0.35f, 0.5f, 0.5f)
+        drawWarmGradientCircle(size.width, size.height, HeroAmber.copy(alpha = 0.85f), phase3, 0.3f, 0.7f, 0.6f)
     }
 }
 
@@ -55,7 +56,7 @@ private fun DrawScope.drawWarmGradientCircle(
     val radius = w.coerceAtLeast(h) * radiusFraction
     drawCircle(
         brush = Brush.radialGradient(
-            colors = listOf(color, color.copy(alpha = 0.3f), Color.Transparent),
+            colors = listOf(color, color.copy(alpha = 0.5f), color.copy(alpha = 0.2f)),
             center = Offset(cx, cy),
             radius = radius,
         ),

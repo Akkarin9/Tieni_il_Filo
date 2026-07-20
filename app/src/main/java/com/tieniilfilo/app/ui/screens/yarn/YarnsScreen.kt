@@ -27,6 +27,7 @@ import com.google.gson.reflect.TypeToken
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -72,6 +73,7 @@ fun YarnsScreen(
     onYarnClick: (Long) -> Unit,
     onNavigateToHooks: () -> Unit,
     onAddClick: () -> Unit = {},
+    onPhotoDelete: (YarnEntity) -> Unit = {},
     viewModel: YarnViewModel = hiltViewModel(),
 ) {
     val filter by viewModel.filter.collectAsState()
@@ -191,11 +193,12 @@ fun YarnsScreen(
                 ) {
                     itemsIndexed(yarns, key = { _, it -> it.id }) { index, yarn ->
                         AnimatedVisibility(visible = true, enter = staggerEnter(index)) {
-                            YarnListItem(
-                                yarn = yarn,
-                                onClick = { onYarnClick(yarn.id) },
-                                onPhotoClick = { viewerUri = it },
-                            )
+                        YarnListItem(
+                            yarn = yarn,
+                            onClick = { onYarnClick(yarn.id) },
+                            onPhotoClick = { viewerUri = it },
+                            onPhotoDelete = onPhotoDelete,
+                        )
                         }
                     }
                     item { Spacer(modifier = Modifier.height(80.dp)) }
@@ -213,6 +216,7 @@ fun YarnListItem(
     yarn: YarnEntity,
     onClick: () -> Unit,
     onPhotoClick: (String) -> Unit = {},
+    onPhotoDelete: (YarnEntity) -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -234,6 +238,24 @@ fun YarnListItem(
             if (!yarn.photoUri.isNullOrBlank()) {
                 Box(modifier = Modifier.size(48.dp)) {
                     PhotoThumb(path = yarn.photoUri, size = 48.dp, onClick = { onPhotoClick(yarn.photoUri) })
+                    IconButton(
+                        onClick = { onPhotoDelete(yarn) },
+                        modifier = Modifier.align(Alignment.TopEnd).size(18.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(16.dp)
+                                .background(Color.Black.copy(alpha = 0.5f), CircleShape),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Rimuovi foto",
+                                tint = Color.White,
+                                modifier = Modifier.size(12.dp),
+                            )
+                        }
+                    }
                     if (listColors.size > 1) {
                         Row(
                             modifier = Modifier

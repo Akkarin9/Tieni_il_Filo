@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Store
 import androidx.compose.material.icons.filled.Link
@@ -310,8 +311,10 @@ fun YarnFormSheet(
         Spacer(modifier = Modifier.height(12.dp))
         FormTextField(value = notes, onValueChange = { notes = it }, label = "Note", singleLine = false)
         Spacer(modifier = Modifier.height(12.dp))
-        PhotoThumb(path = photoPath, size = 96.dp)
-        Spacer(modifier = Modifier.height(8.dp))
+        if (photoPath != null) {
+            PhotoThumb(path = photoPath, size = 96.dp)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -333,6 +336,16 @@ fun YarnFormSheet(
                 Icon(Icons.Default.CameraAlt, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(4.dp))
                 Text("Fotocamera")
+            }
+            if (photoPath != null) {
+                OutlinedButton(
+                    onClick = { photoPath = null },
+                    modifier = Modifier.weight(0.7f),
+                ) {
+                    Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Rimuovi")
+                }
             }
         }
     }

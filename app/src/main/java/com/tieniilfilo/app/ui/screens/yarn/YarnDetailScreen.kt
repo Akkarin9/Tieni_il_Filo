@@ -241,7 +241,7 @@ private fun HeroYarnHeader(
     onDeletePhoto: () -> Unit,
 ) {
     val colors = parseColorHexes(yarn.colorHexes, yarn.colorHex)
-    val heroColor = if (colors.isNotEmpty()) Color(colors.first()) else HeroCoral
+    val gradientColors = colors.map { Color(it) }.ifEmpty { listOf(HeroCoral) }
 
     Box(
         modifier = Modifier
@@ -249,9 +249,13 @@ private fun HeroYarnHeader(
             .height(220.dp)
             .drawBehind {
                 drawRect(
-                    brush = androidx.compose.ui.graphics.Brush.sweepGradient(
-                        colors = listOf(heroColor, heroColor.copy(alpha = 0.6f), HeroAmber, HeroCoral, heroColor),
-                    ),
+                    brush = if (gradientColors.size >= 2) {
+                        androidx.compose.ui.graphics.Brush.horizontalGradient(gradientColors)
+                    } else {
+                        androidx.compose.ui.graphics.Brush.verticalGradient(
+                            listOf(gradientColors[0], gradientColors[0].copy(alpha = 0.5f))
+                        )
+                    },
                 )
             }
             .padding(16.dp),
@@ -265,9 +269,14 @@ private fun HeroYarnHeader(
                     PhotoThumb(path = photoUri, size = 120.dp, onClick = onViewPhoto)
                     IconButton(
                         onClick = onDeletePhoto,
-                        modifier = Modifier.align(Alignment.TopEnd),
+                        modifier = Modifier.align(Alignment.TopEnd).size(24.dp),
                     ) {
-                        Icon(androidx.compose.material.icons.Icons.Default.Close, contentDescription = "Rimuovi foto", tint = androidx.compose.material3.MaterialTheme.colorScheme.error, modifier = Modifier.size(18.dp))
+                        Box(
+                            modifier = Modifier.size(22.dp).background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.45f), androidx.compose.foundation.shape.CircleShape),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(androidx.compose.material.icons.Icons.Default.Close, contentDescription = "Rimuovi foto", tint = androidx.compose.ui.graphics.Color.White, modifier = Modifier.size(14.dp))
+                        }
                     }
                 }
                 androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.width(16.dp))
