@@ -23,6 +23,21 @@
 
 <br>
 
+## 📥 Installazione rapida
+
+> Vuoi provare l'app senza compilare il codice?
+
+👉 **[Scarica l'APK](apk/app-debug.apk)** (debug build, ~8MB)
+
+1. Scarica il file `app-debug.apk` sul tuo telefono Android (8.0+)
+2. Apri il file dal gestore file (o dalle notifiche di download)
+3. Se richiesto, abilita **"Installazione da origini sconosciute"** per il gestore file
+4. Tocca **Installa** e apri 🧶
+
+> ⚠️ È una build **debug**: usala per prova. Per uso quotidiano ti consiglio di compilare da sorgente o attendere la build release firmata.
+
+<br>
+
 ## ✨ Caratteristiche
 
 🧶 **Filati** — Catalogo completo: nome, marca, colore (multicolore con badge accavallati), composizione, quantità in gomitoli/grammi/metri, prezzo, fonte. Filtri per stato e composizione, ricerca testuale, ordinamento per nome/data.
