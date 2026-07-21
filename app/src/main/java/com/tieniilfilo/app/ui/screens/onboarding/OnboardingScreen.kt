@@ -54,6 +54,13 @@ fun OnboardingScreen(onFinished: () -> Unit) {
         OnboardingPage(Icons.Default.Inventory2, "Il tuo magazzino", "Registra filati con colore, quantità e stato. Gli uncinetti stanno nella sezione Filati."),
         OnboardingPage(Icons.Default.AutoAwesome, "Progetti e schemi", "Segui i lavori in corso, completa con confetti, e tieni gli schemi preferiti a portata di mano."),
     )
+    val illustrationForPage: @Composable (Int) -> Unit = { page ->
+        when (page) {
+            0 -> com.tieniilfilo.app.ui.components.SkeinIllustration()
+            1 -> com.tieniilfilo.app.ui.components.HookIllustration()
+            else -> com.tieniilfilo.app.ui.components.CrochetTileIllustration()
+        }
+    }
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
 
@@ -73,12 +80,12 @@ fun OnboardingScreen(onFinished: () -> Unit) {
                     contentAlignment = Alignment.Center,
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = item.icon,
-                            contentDescription = null,
-                            modifier = Modifier.size(88.dp),
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
+                        Box(
+                        modifier = Modifier.size(120.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        illustrationForPage(page)
+                    }
                         Spacer(modifier = Modifier.height(24.dp))
                         Text(item.title, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
                         Spacer(modifier = Modifier.height(12.dp))

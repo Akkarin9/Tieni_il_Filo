@@ -2,6 +2,7 @@ package com.tieniilfilo.app.ui.screens.hook
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +31,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tieniilfilo.app.data.local.entity.HookEntity
 import com.tieniilfilo.app.data.local.entity.HookMaterial
 import com.tieniilfilo.app.ui.components.EmptyState
+import com.tieniilfilo.app.util.toUkHookSize
+import com.tieniilfilo.app.util.toUsHookSize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +55,7 @@ fun HooksScreen(
                 subtitle = "Aggiungi il tuo primo uncinetto per iniziare",
                 actionLabel = "Aggiungi uncinetto",
                 onActionClick = onAddClick,
+                illustration = { com.tieniilfilo.app.ui.components.HookIllustration() },
             )
         } else {
             LazyColumn(
@@ -81,16 +85,35 @@ fun HookListItem(hook: HookEntity) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = "${hook.sizeMm} mm",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            Column {
+                Text(
+                    text = "${hook.sizeMm} mm",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                val usSize = hook.sizeMm.toUsHookSize()
+                val ukSize = hook.sizeMm.toUkHookSize()
+                if (usSize != null) {
+                    Text(
+                        text = "US $usSize",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                if (ukSize.isNotEmpty()) {
+                    Text(
+                        text = "UK $ukSize",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
             Spacer(modifier = Modifier.width(16.dp))
             if (hook.brand.isNotEmpty()) {
                 Text(
                     text = hook.brand,
                     style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             }

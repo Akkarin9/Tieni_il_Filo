@@ -22,6 +22,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Store
 import androidx.compose.material.icons.filled.Link
@@ -134,6 +136,7 @@ fun YarnFormSheet(
     var storeName by remember(formKey) { mutableStateOf(initialYarn?.storeName ?: "") }
     var storeLink by remember(formKey) { mutableStateOf(initialYarn?.storeLink ?: "") }
     var unitPrice by remember(formKey) { mutableStateOf(initialYarn?.unitPrice?.let { "%.2f".format(it).trimEnd('0').trimEnd('.') } ?: "") }
+    var isWishlist by remember(formKey) { mutableStateOf(initialYarn?.isWishlist ?: false) }
     var notes by remember(formKey) { mutableStateOf(initialYarn?.notes ?: "") }
     var photoPath by remember(formKey) { mutableStateOf(initialYarn?.photoUri) }
 
@@ -210,6 +213,7 @@ fun YarnFormSheet(
                         yarnSource = yarnSource,
                         storeName = storeName.trim(),
                         storeLink = storeLink.trim(),
+                        isWishlist = isWishlist,
                         notes = notes.trim(),
                         photoUri = photoPath,
                     )
@@ -307,6 +311,20 @@ fun YarnFormSheet(
         } else {
             FormTextField(value = storeLink, onValueChange = { storeLink = it }, label = "Link / URL")
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
+        androidx.compose.material3.FilterChip(
+            selected = isWishlist,
+            onClick = { isWishlist = !isWishlist },
+            label = { Text("Lista desideri") },
+            leadingIcon = {
+                Icon(
+                    if (isWishlist) androidx.compose.material.icons.Icons.Default.Favorite else androidx.compose.material.icons.Icons.Default.FavoriteBorder,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                )
+            },
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
         FormTextField(value = notes, onValueChange = { notes = it }, label = "Note", singleLine = false)

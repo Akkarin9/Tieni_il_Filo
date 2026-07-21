@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -55,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -203,6 +205,30 @@ fun ProjectDetailScreen(
                             Icon(Icons.Default.Celebration, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = "Completato: ${formatDate(proj.endDate)}", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+
+                    if (proj.targetDeadline != null) {
+                        val daysLeft = daysUntil(proj.targetDeadline)
+                        val deadlineColor = when {
+                            daysLeft < 0 -> MaterialTheme.colorScheme.error
+                            daysLeft <= 3 -> Color(0xFFFFB74D)
+                            else -> Color(0xFF81C784)
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Rounded.Schedule, contentDescription = null, tint = deadlineColor)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = when {
+                                    daysLeft < 0 -> "Scaduto da ${-daysLeft} giorni"
+                                    daysLeft == 0 -> "Scade oggi!"
+                                    daysLeft == 1 -> "Scade domani!"
+                                    else -> "Scade tra $daysLeft giorni"
+                                },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = deadlineColor,
+                            )
                         }
                     }
 

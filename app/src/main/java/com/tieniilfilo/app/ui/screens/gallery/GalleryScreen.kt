@@ -51,6 +51,7 @@ fun GalleryScreen() {
                 icon = Icons.Default.Celebration,
                 title = "Nessuna foto",
                 subtitle = "Completa un progetto per aggiungere foto alla galleria",
+                illustration = { com.tieniilfilo.app.ui.components.CrochetTileIllustration() },
             )
         } else {
             LazyVerticalGrid(

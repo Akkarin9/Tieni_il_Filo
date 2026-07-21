@@ -170,6 +170,7 @@ fun PatternsScreen(
                     subtitle = "Aggiungi schemi e pattern per i tuoi progetti",
                     actionLabel = "Aggiungi schema",
                     onActionClick = onAddClick,
+                    illustration = { com.tieniilfilo.app.ui.components.OpenBookIllustration() },
                 )
             } else {
                 LazyColumn(

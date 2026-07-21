@@ -21,8 +21,9 @@ data class YarnFilter(
     val searchQuery: String = "",
     val status: YarnStatus? = null,
     val composition: YarnComposition? = null,
+    val showOnlyWishlist: Boolean = false,
 ) {
-    val isActive: Boolean get() = searchQuery.isNotEmpty() || status != null || composition != null
+    val isActive: Boolean get() = searchQuery.isNotEmpty() || status != null || composition != null || showOnlyWishlist
 }
 
 @HiltViewModel
@@ -46,8 +47,9 @@ class YarnViewModel @Inject constructor(
 
             val matchesStatus = filter.status == null || yarn.status == filter.status
             val matchesComposition = filter.composition == null || yarn.composition == filter.composition
+            val matchesWishlist = !filter.showOnlyWishlist || yarn.isWishlist
 
-            matchesSearch && matchesStatus && matchesComposition
+            matchesSearch && matchesStatus && matchesComposition && matchesWishlist
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
@@ -63,6 +65,10 @@ class YarnViewModel @Inject constructor(
 
     fun setCompositionFilter(composition: YarnComposition?) {
         _filter.value = _filter.value.copy(composition = if (_filter.value.composition == composition) null else composition)
+    }
+
+    fun toggleWishlistFilter() {
+        _filter.value = _filter.value.copy(showOnlyWishlist = !_filter.value.showOnlyWishlist)
     }
 
     fun clearFilters() {

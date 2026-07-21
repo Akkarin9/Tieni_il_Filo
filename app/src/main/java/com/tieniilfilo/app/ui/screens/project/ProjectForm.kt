@@ -53,6 +53,21 @@ fun ProjectFormSheet(
     var deadline by remember(formKey) { mutableStateOf(initialProject?.targetDeadline?.let { formatDate(it) } ?: "") }
     var notes by remember(formKey) { mutableStateOf(initialProject?.notes ?: "") }
     var selectedPatternId by remember(formKey) { mutableStateOf(initialProject?.patternId) }
+
+    fun parseDeadline(): Long? {
+        try {
+            val parts = deadline.split("/")
+            if (parts.size == 3) {
+                val day = parts[0].padStart(2, '0').toInt()
+                val month = parts[1].padStart(2, '0').toInt()
+                val year = parts[2].toInt()
+                val cal = java.util.Calendar.getInstance()
+                cal.set(year, month - 1, day, 23, 59, 59)
+                return cal.timeInMillis
+            }
+        } catch (_: Exception) {}
+        return null
+    }
     var showPatternPicker by remember { mutableStateOf(false) }
     val selectedPattern = allPatterns.find { it.id == selectedPatternId }
 
@@ -72,6 +87,7 @@ fun ProjectFormSheet(
                         status = status,
                         notes = notes.trim(),
                         patternId = selectedPatternId,
+                        targetDeadline = parseDeadline(),
                     )
                 )
             } else {
@@ -92,6 +108,9 @@ fun ProjectFormSheet(
         )
         Spacer(modifier = Modifier.height(12.dp))
         FormTextField(value = notes, onValueChange = { notes = it }, label = "Note", singleLine = false)
+
+        Spacer(modifier = Modifier.height(12.dp))
+        FormTextField(value = deadline, onValueChange = { deadline = it }, label = "Scadenza (gg/mm/aaaa)", singleLine = true)
 
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Schema collegato", style = MaterialTheme.typography.labelMedium)

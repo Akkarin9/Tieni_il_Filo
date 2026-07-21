@@ -178,6 +178,7 @@ fun ProjectsScreen(
                     subtitle = "Inizia il tuo primo progetto creativo!",
                     actionLabel = "Aggiungi progetto",
                     onActionClick = onAddClick,
+                    illustration = { com.tieniilfilo.app.ui.components.BasketEmptyIllustration() },
                 )
             } else {
                 LazyColumn(
@@ -251,6 +252,35 @@ fun ProjectListItem(
                 }
             }
 
+            if (project.targetDeadline != null) {
+                val daysLeft = daysUntil(project.targetDeadline)
+                val deadlineColor = when {
+                    daysLeft < 0 -> Color(0xFFE53935) // red
+                    daysLeft <= 3 -> Color(0xFFFFB74D) // amber
+                    else -> Color(0xFF81C784) // green
+                }
+                Spacer(modifier = Modifier.height(2.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Rounded.Schedule,
+                        contentDescription = null,
+                        modifier = Modifier.height(14.dp),
+                        tint = deadlineColor,
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = when {
+                            daysLeft < 0 -> "Scaduto da ${-daysLeft} giorni"
+                            daysLeft == 0 -> "Scade oggi!"
+                            daysLeft == 1 -> "Scade domani!"
+                            else -> "Scade tra $daysLeft giorni"
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = deadlineColor,
+                    )
+                }
+            }
+
             if (project.endDate != null) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
@@ -312,4 +342,10 @@ fun ProjectStatus.toColor() = when (this) {
 fun formatDate(timestamp: Long): String {
     val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     return sdf.format(Date(timestamp))
+}
+
+fun daysUntil(timestamp: Long): Int {
+    val now = System.currentTimeMillis()
+    val diff = timestamp - now
+    return (diff / (1000L * 60L * 60L * 24L)).toInt()
 }

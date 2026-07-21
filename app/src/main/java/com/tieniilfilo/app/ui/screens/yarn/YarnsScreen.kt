@@ -28,6 +28,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -39,13 +41,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,6 +73,7 @@ import com.tieniilfilo.app.ui.components.StatusChip
 import com.tieniilfilo.app.ui.theme.AppIcons
 import com.tieniilfilo.app.ui.theme.pressAnimation
 import com.tieniilfilo.app.ui.theme.staggerEnter
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -81,6 +89,8 @@ fun YarnsScreen(
     var searchExpanded by remember { mutableStateOf(false) }
     var showFilters by remember { mutableStateOf(false) }
     var viewerUri by remember { mutableStateOf<String?>(null) }
+    val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
@@ -101,6 +111,7 @@ fun YarnsScreen(
                 },
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -175,6 +186,17 @@ fun YarnsScreen(
                             )
                         }
                     }
+                    // Wishlist filter
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("Altro", style = MaterialTheme.typography.labelMedium)
+                    FlowRow {
+                        FilterChip(
+                            selected = filter.showOnlyWishlist,
+                            onClick = { viewModel.toggleWishlistFilter() },
+                            label = { Text("Lista desideri") },
+                            leadingIcon = { Icon(Icons.Default.Favorite, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                        )
+                    }
                 }
             }
 
@@ -185,6 +207,7 @@ fun YarnsScreen(
                     subtitle = "Prova a cambiare i filtri o aggiungi un nuovo filato",
                     actionLabel = "Aggiungi filato",
                     onActionClick = onAddClick,
+                    illustration = { com.tieniilfilo.app.ui.components.SkeinIllustration() },
                 )
             } else {
                 LazyColumn(
@@ -193,12 +216,19 @@ fun YarnsScreen(
                 ) {
                     itemsIndexed(yarns, key = { _, it -> it.id }) { index, yarn ->
                         AnimatedVisibility(visible = true, enter = staggerEnter(index)) {
-                        YarnListItem(
-                            yarn = yarn,
-                            onClick = { onYarnClick(yarn.id) },
-                            onPhotoClick = { viewerUri = it },
-                            onPhotoDelete = onPhotoDelete,
-                        )
+                            YarnListItem(
+                                yarn = yarn,
+                                onClick = { onYarnClick(yarn.id) },
+                                onPhotoClick = { viewerUri = it },
+                                onPhotoDelete = onPhotoDelete,
+                                onSwipeDelete = {
+                                    viewModel.deleteYarn(it)
+                                    coroutineScope.launch {
+                                        val result = snackbarHostState.showSnackbar("${it.name} eliminato", "ANNULLA", duration = androidx.compose.material3.SnackbarDuration.Long)
+                                        if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) viewModel.undoDeleteYarn()
+                                    }
+                                },
+                            )
                         }
                     }
                     item { Spacer(modifier = Modifier.height(80.dp)) }
@@ -211,17 +241,47 @@ fun YarnsScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun YarnListItem(
     yarn: YarnEntity,
     onClick: () -> Unit,
     onPhotoClick: (String) -> Unit = {},
     onPhotoDelete: (YarnEntity) -> Unit = {},
+    onSwipeDelete: (YarnEntity) -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = {
+            if (it == SwipeToDismissBoxValue.EndToStart) {
+                onSwipeDelete(yarn)
+                true
+            } else false
+        },
+    )
 
-    Card(
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false,
+        enableDismissFromEndToStart = true,
+        backgroundContent = {
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.errorContainer)
+                    .padding(end = 20.dp),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Elimina",
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                )
+            }
+        },
+    ) {
+        Card(
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize()
@@ -335,7 +395,12 @@ fun YarnListItem(
                 label = yarn.status.toDisplayString(),
                 chipColor = yarn.status.toChipColor(),
             )
+            if (yarn.isWishlist) {
+                Spacer(modifier = Modifier.width(6.dp))
+                Icon(Icons.Default.Favorite, contentDescription = "Desiderio", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(16.dp))
+            }
         }
+    }
     }
 }
 
