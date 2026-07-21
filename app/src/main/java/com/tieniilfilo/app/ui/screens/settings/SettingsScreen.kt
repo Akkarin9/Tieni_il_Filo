@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,9 +63,14 @@ class SettingsViewModel @Inject constructor(
     val useDynamicColors = preferences.useDynamicColors
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val language = preferences.language
+        .stateIn(viewModelScope, SharingStarted.Eagerly, "it")
+
     fun setDarkMode(enabled: Boolean) = preferences.setDarkMode(enabled)
 
     fun setUseDynamicColors(enabled: Boolean) = preferences.setUseDynamicColors(enabled)
+
+    fun setLanguage(lang: String) = preferences.setLanguage(lang)
 
     suspend fun export(uri: Uri): Boolean = backupManager.exportToUri(uri)
 
@@ -83,6 +89,7 @@ fun SettingsScreen(
 ) {
     val darkMode by viewModel.darkMode.collectAsState()
     val dynamicColors by viewModel.useDynamicColors.collectAsState()
+    val language by viewModel.language.collectAsState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -165,6 +172,25 @@ fun SettingsScreen(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
             }
+
+            SettingsCard {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Lingua", style = MaterialTheme.typography.titleSmall)
+                        Text(if (language == "it") "Italiano" else "English", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Row {
+                        FilterChip(selected = language == "it", onClick = { viewModel.setLanguage("it") }, label = { Text("IT") }, modifier = Modifier.padding(end = 4.dp))
+                        FilterChip(selected = language == "en", onClick = { viewModel.setLanguage("en") }, label = { Text("EN") })
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
 
             SettingsCard {
                 Row(

@@ -23,6 +23,9 @@ class PreferencesManager @Inject constructor(
     private val _useDynamicColors = MutableStateFlow(prefs.getBoolean(KEY_DYNAMIC_COLORS, false))
     val useDynamicColors: StateFlow<Boolean> = _useDynamicColors.asStateFlow()
 
+    private val _language = MutableStateFlow(prefs.getString(KEY_LANGUAGE, "it") ?: "it")
+    val language: StateFlow<String> = _language.asStateFlow()
+
     fun setOnboardingDone(done: Boolean) {
         prefs.edit().putBoolean(KEY_ONBOARDING, done).apply()
         _onboardingDone.value = done
@@ -38,6 +41,11 @@ class PreferencesManager @Inject constructor(
         _useDynamicColors.value = enabled
     }
 
+    fun setLanguage(lang: String) {
+        prefs.edit().putString(KEY_LANGUAGE, lang).apply()
+        _language.value = lang
+    }
+
     fun isSeeded(): Boolean = prefs.getBoolean(KEY_SEEDED, false)
 
     fun setSeeded(seeded: Boolean) {
@@ -49,6 +57,7 @@ class PreferencesManager @Inject constructor(
         private const val KEY_ONBOARDING = "onboarding_done"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_DYNAMIC_COLORS = "dynamic_colors"
+        private const val KEY_LANGUAGE = "language"
         private const val KEY_SEEDED = "seeded_v1"
     }
 }

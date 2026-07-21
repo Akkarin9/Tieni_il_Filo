@@ -40,6 +40,9 @@ class AppViewModel @Inject constructor(
     val useDynamicColors = preferences.useDynamicColors
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
+    val language = preferences.language
+        .stateIn(viewModelScope, SharingStarted.Eagerly, "it")
+
     fun completeOnboarding() {
         preferences.setOnboardingDone(true)
         viewModelScope.launch { seedManager.seedIfNeeded() }
@@ -53,6 +56,8 @@ fun TieniIlFiloAppContent(
     val onboardingDone by viewModel.onboardingDone.collectAsState()
     val darkMode by viewModel.darkMode.collectAsState()
     val useDynamicColors by viewModel.useDynamicColors.collectAsState()
+    val language by viewModel.language.collectAsState()
+    val locale = java.util.Locale(language)
 
     Log.d("TIENI", "TieniIlFiloAppContent recompose — onboardingDone=$onboardingDone")
 
