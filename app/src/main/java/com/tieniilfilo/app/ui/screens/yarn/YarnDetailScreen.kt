@@ -57,6 +57,7 @@ import com.tieniilfilo.app.ui.components.FullScreenImageViewer
 import com.tieniilfilo.app.ui.components.GradientSlider
 import com.tieniilfilo.app.ui.components.PhotoThumb
 import com.tieniilfilo.app.ui.components.StatusChip
+import com.tieniilfilo.app.ui.components.StitchDivider
 import com.tieniilfilo.app.ui.theme.FrauncesFontFamily
 import com.tieniilfilo.app.ui.theme.HeroCoral
 import com.tieniilfilo.app.ui.theme.HeroAmber
@@ -109,7 +110,7 @@ fun YarnDetailScreen(
                     .padding(16.dp),
             ) {
                 HeroYarnHeader(yarn = y, y.photoUri, onViewPhoto = { viewerUri = y.photoUri }, onDeletePhoto = { viewModel.deletePhoto(y) })
-                Spacer(modifier = Modifier.height(12.dp))
+                StitchDivider(modifier = Modifier.padding(vertical = 4.dp))
 
                 if (y.brand.isNotEmpty()) {
                     Text(
@@ -180,6 +181,7 @@ fun YarnDetailScreen(
                         )
                     }
                 }
+                StitchDivider(modifier = Modifier.padding(vertical = 4.dp))
 
                 if (y.notes.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(12.dp))

@@ -57,7 +57,6 @@ fun TieniIlFiloAppContent(
     val darkMode by viewModel.darkMode.collectAsState()
     val useDynamicColors by viewModel.useDynamicColors.collectAsState()
     val language by viewModel.language.collectAsState()
-    val locale = java.util.Locale(language)
 
     Log.d("TIENI", "TieniIlFiloAppContent recompose — onboardingDone=$onboardingDone")
 

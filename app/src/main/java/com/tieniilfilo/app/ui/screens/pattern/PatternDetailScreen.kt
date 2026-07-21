@@ -54,6 +54,7 @@ import com.tieniilfilo.app.data.local.entity.PatternEntity
 import com.tieniilfilo.app.data.local.entity.PatternSourceType
 import com.tieniilfilo.app.ui.components.FullScreenImageViewer
 import com.tieniilfilo.app.ui.components.PhotoThumb
+import com.tieniilfilo.app.ui.components.StitchDivider
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -146,6 +147,7 @@ fun PatternDetailScreen(
                 ) {
                     Text(text = pat.title, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onSurface)
                 }
+                StitchDivider(modifier = Modifier.padding(vertical = 4.dp))
 
                 if (pat.sourceType == PatternSourceType.IMAGE && !pat.fileUri.isNullOrBlank()) {
                     Spacer(modifier = Modifier.height(12.dp))

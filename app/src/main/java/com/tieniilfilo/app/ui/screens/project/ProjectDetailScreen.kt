@@ -71,6 +71,7 @@ import com.tieniilfilo.app.ui.components.ConfettiOverlay
 import com.tieniilfilo.app.ui.components.FullScreenImageViewer
 import com.tieniilfilo.app.ui.components.PhotoThumb
 import com.tieniilfilo.app.ui.components.StatusChip
+import com.tieniilfilo.app.ui.components.StitchDivider
 import com.tieniilfilo.app.util.PhotoStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -223,6 +224,7 @@ fun ProjectDetailScreen(
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
+                    StitchDivider(modifier = Modifier.padding(vertical = 4.dp))
 
                     if (proj.startDate != null) {
                         Spacer(modifier = Modifier.height(12.dp))
@@ -301,10 +303,11 @@ fun ProjectDetailScreen(
                                 Text(text = proj.notes, style = MaterialTheme.typography.bodyMedium)
                             }
                         }
-                    }
+                }
+                StitchDivider(modifier = Modifier.padding(vertical = 4.dp))
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "Foto progresso", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = "Foto progresso", style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),

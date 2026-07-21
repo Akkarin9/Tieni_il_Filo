@@ -1,5 +1,6 @@
 package com.tieniilfilo.app.ui.screens.settings
 
+import android.app.Activity
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,7 +43,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
+import com.tieniilfilo.app.R
 import androidx.lifecycle.viewModelScope
 import com.tieniilfilo.app.data.backup.BackupManager
 import com.tieniilfilo.app.util.PreferencesManager
@@ -90,6 +94,7 @@ fun SettingsScreen(
     val darkMode by viewModel.darkMode.collectAsState()
     val dynamicColors by viewModel.useDynamicColors.collectAsState()
     val language by viewModel.language.collectAsState()
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -143,8 +148,8 @@ fun SettingsScreen(
                     Icon(Icons.Default.DarkMode, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Modalità scura", style = MaterialTheme.typography.titleSmall)
-                        Text("Tema pastello scuro", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.dark_mode), style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.dark_subtitle), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Switch(checked = darkMode, onCheckedChange = { viewModel.setDarkMode(it) })
                 }
@@ -164,8 +169,8 @@ fun SettingsScreen(
                         Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                         Spacer(modifier = Modifier.width(12.dp))
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Colori dinamici", style = MaterialTheme.typography.titleSmall)
-                            Text("Sfondo wallpaper (Android 12+)", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.dynamic_colors), style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.dynamic_subtitle), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Switch(checked = dynamicColors, onCheckedChange = { viewModel.setUseDynamicColors(it) })
                     }
@@ -181,12 +186,12 @@ fun SettingsScreen(
                     Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Lingua", style = MaterialTheme.typography.titleSmall)
+                        Text(stringResource(R.string.language), style = MaterialTheme.typography.titleSmall)
                         Text(if (language == "it") "Italiano" else "English", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Row {
-                        FilterChip(selected = language == "it", onClick = { viewModel.setLanguage("it") }, label = { Text("IT") }, modifier = Modifier.padding(end = 4.dp))
-                        FilterChip(selected = language == "en", onClick = { viewModel.setLanguage("en") }, label = { Text("EN") })
+                        FilterChip(selected = language == "it", onClick = { viewModel.setLanguage("it"); (context as android.app.Activity).recreate() }, label = { Text("IT") }, modifier = Modifier.padding(end = 4.dp))
+                        FilterChip(selected = language == "en", onClick = { viewModel.setLanguage("en"); (context as android.app.Activity).recreate() }, label = { Text("EN") })
                     }
                 }
             }
@@ -203,8 +208,8 @@ fun SettingsScreen(
                     Icon(Icons.Default.Download, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
-                        Text("Esporta dati", style = MaterialTheme.typography.titleSmall)
-                        Text("Backup JSON locale", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.export_data), style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.export_subtitle), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
