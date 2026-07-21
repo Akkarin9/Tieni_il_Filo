@@ -264,7 +264,8 @@ private fun HeroYarnHeader(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (!photoUri.isNullOrBlank()) {
+            val hasPhoto = !photoUri.isNullOrBlank()
+            if (hasPhoto) {
                 Box {
                     PhotoThumb(path = photoUri, size = 120.dp, onClick = onViewPhoto)
                     IconButton(

@@ -71,7 +71,7 @@ fun EmptyState(
             verticalArrangement = Arrangement.Center,
         ) {
             if (illustration != null) {
-                Box(modifier = Modifier.size(96.dp), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.size(96.dp).scale(pulseScale), contentAlignment = Alignment.Center) {
                     illustration()
                 }
             } else {
