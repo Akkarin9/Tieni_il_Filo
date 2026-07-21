@@ -27,14 +27,14 @@
 
 > Vuoi provare l'app senza compilare il codice?
 
-👉 **[Scarica l'APK](apk/app-debug.apk)** (debug build, ~8MB)
+👉 **[Scarica APK release (firmato)](apk/app-release.apk)** — versione ufficiale, 3.2 MB
 
-1. Scarica il file `app-debug.apk` sul tuo telefono Android (8.0+)
+1. Scarica `app-release.apk` sul tuo telefono Android (8.0+)
 2. Apri il file dal gestore file (o dalle notifiche di download)
 3. Se richiesto, abilita **"Installazione da origini sconosciute"** per il gestore file
 4. Tocca **Installa** e apri 🧶
 
-> ⚠️ È una build **debug**: usala per prova. Per uso quotidiano ti consiglio di compilare da sorgente o attendere la build release firmata.
+> Esiste anche una [build debug](apk/app-debug.apk) per sviluppatori.
 
 <br>
 
