@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -145,6 +146,34 @@ fun MultiColorPickerRow(
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(if (isCustomSelected) "Rimuovi colore personalizzato" else "Aggiungi colore personalizzato")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+        var hexInput by remember { mutableStateOf("") }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = hexInput,
+                onValueChange = { hexInput = it.take(7).uppercase() },
+                label = { Text("#RRGGBB") },
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                shape = MaterialTheme.shapes.small,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(
+                onClick = {
+                    try {
+                        val hex = hexInput.removePrefix("#").trim()
+                        if (hex.length == 6) {
+                            val int = hex.toInt(16)
+                            onToggle(0xFF000000.toInt() or int)
+                            hexInput = ""
+                        }
+                    } catch (_: Exception) {}
+                },
+            ) {
+                Text("Aggiungi")
+            }
         }
 
         if (selected.isNotEmpty()) {

@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -54,6 +56,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.graphics.Color
@@ -191,6 +194,35 @@ fun ProjectDetailScreen(
                         chipColor = proj.status.toChipColor(),
                         isActive = proj.status == ProjectStatus.IN_CORSO,
                     )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .drawBehind {
+                                val heroColor = when (proj.status) {
+                                    ProjectStatus.IN_CORSO -> androidx.compose.ui.graphics.Color(0xFFFFB74D)
+                                    ProjectStatus.COMPLETATO -> androidx.compose.ui.graphics.Color(0xFF81C784)
+                                    ProjectStatus.IN_PAUSA -> androidx.compose.ui.graphics.Color(0xFF90A4AE)
+                                    else -> androidx.compose.ui.graphics.Color(0xFFB39DDB)
+                                }
+                                drawRoundRect(
+                                    heroColor.copy(alpha = 0.4f),
+                                )
+                                drawRoundRect(
+                                    heroColor.copy(alpha = 0.15f),
+                                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(16f),
+                                )
+                            }
+                            .padding(12.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = proj.name,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
 
                     if (proj.startDate != null) {
                         Spacer(modifier = Modifier.height(12.dp))
@@ -331,6 +363,29 @@ fun ProjectDetailScreen(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                    }
+
+                    if (proj.status == ProjectStatus.COMPLETATO) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(text = "Valutazione", style = MaterialTheme.typography.titleMedium)
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            for (i in 1..5) {
+                                IconButton(
+                                    onClick = {
+                                        viewModel.updateProject(proj.copy(rating = if (proj.rating == i) 0 else i))
+                                    },
+                                    modifier = Modifier.size(36.dp),
+                                ) {
+                                    Icon(
+                                        imageVector = if (i <= proj.rating) Icons.Default.Star else Icons.Default.StarBorder,
+                                        contentDescription = "Stella $i",
+                                        tint = if (i <= proj.rating) Color(0xFFFFB74D) else Color(0xFFD5CFC5),
+                                        modifier = Modifier.size(28.dp),
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     if (proj.status != ProjectStatus.COMPLETATO) {

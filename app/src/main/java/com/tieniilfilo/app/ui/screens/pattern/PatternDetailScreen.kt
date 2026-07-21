@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -129,6 +130,21 @@ fun PatternDetailScreen(
                         },
                         style = MaterialTheme.typography.bodyMedium,
                     )
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .drawBehind {
+                            val heroColor = pat.sourceType.toColor()
+                            drawRoundRect(heroColor.copy(alpha = 0.4f))
+                            drawRoundRect(heroColor.copy(alpha = 0.15f), cornerRadius = androidx.compose.ui.geometry.CornerRadius(16f))
+                        }
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = pat.title, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onSurface)
                 }
 
                 if (pat.sourceType == PatternSourceType.IMAGE && !pat.fileUri.isNullOrBlank()) {
