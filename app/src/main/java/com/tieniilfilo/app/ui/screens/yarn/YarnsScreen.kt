@@ -284,6 +284,7 @@ fun YarnListItem(
         Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
             .animateContentSize()
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
             .pressAnimation(isPressed),
