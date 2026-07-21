@@ -165,56 +165,7 @@
 
 <br>
 
-## 🔐 Firma APK per i tuoi amici
-
-Per distribuire l'app con una firma personale (più professionale del debug):
-
-### 1. Genera il keystore (una volta sola)
-
-Apri il terminale e digita:
-
-```bash
-keytool -genkeypair -v \
-  -keystore ~/keystores/tieni-il-filo.jks \
-  -keyalg RSA -keysize 2048 -validity 10000 \
-  -alias tieni-filo-key
-```
-
-Ti chiederà:
-- **Password del keystore** → inventane una sicura
-- **Nome e cognome** → "Tieni il Filo"
-- **Unità organizzativa** → "Creative"
-- **Organizzazione** → "Akkarin9"
-- **Città / Stato / Paese** → (i tuoi dati)
-
-> ⚠️ Conserva il file `.jks` e la password **in un posto sicuro**. Se li perdi, non potrai più aggiornare l'app!
-
-### 2. Compila `keystore.properties`
-
-Il file `keystore.properties` nella root del progetto è già pronto come template. Apri e inserisci:
-- `storeFile` → percorso assoluto del `.jks`
-- `storePassword` → password del keystore
-- `keyPassword` → password della chiave (puoi usare la stessa)
-
-> ℹ️ `keystore.properties` è già nel `.gitignore` — non finirà mai su GitHub.
-
-### 3. Genera l'APK firmato
-
-```bash
-./gradlew assembleRelease
-```
-
-Output: `app/build/outputs/apk/release/app-release.apk`
-
-> 💡 Copialo in `apk/` e aggiorna il link nel README se vuoi distribuire la versione firmata al posto di quella debug.
-
-### 🌍 Pubblicare sul Play Store (in futuro)
-
-1. Registrati su [Google Play Console](https://play.google.com/console) — $25 una tantum
-2. Genera l'App Bundle: `./gradlew bundleRelease`
-3. Carica il file `.aab` (non `.apk`) nella Console
-4. Compila store listing, screenshot, content rating, privacy policy
-5. Invia per la review (~1-2 settimane)
+> 💡 **Vuoi contribuire o compilare da sorgente?** Leggi la [guida per sviluppatori](docs/RELEASE.md) con istruzioni per firma APK e pubblicazione Play Store.
 
 <br>
 
