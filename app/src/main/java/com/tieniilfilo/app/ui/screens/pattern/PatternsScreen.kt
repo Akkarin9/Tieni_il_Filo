@@ -56,6 +56,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -236,15 +237,15 @@ fun PatternListItem(
             }
         },
     ) {
-        Card(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
+                .shadow(1.dp, MaterialTheme.shapes.medium)
                 .animateContentSize()
                 .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
                 .pressAnimation(isPressed),
-            shape = MaterialTheme.shapes.medium,
-            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         ) {
             Row(
                 modifier = Modifier.padding(16.dp),
