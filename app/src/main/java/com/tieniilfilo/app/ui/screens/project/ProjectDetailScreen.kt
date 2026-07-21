@@ -189,6 +189,7 @@ fun ProjectDetailScreen(
                     StatusChip(
                         label = proj.status.toDisplayString(),
                         chipColor = proj.status.toChipColor(),
+                        isActive = proj.status == ProjectStatus.IN_CORSO,
                     )
 
                     if (proj.startDate != null) {

@@ -54,6 +54,7 @@ import com.tieniilfilo.app.data.local.entity.YarnComposition
 import com.tieniilfilo.app.data.local.entity.YarnEntity
 import com.tieniilfilo.app.data.local.entity.YarnSource
 import com.tieniilfilo.app.ui.components.FullScreenImageViewer
+import com.tieniilfilo.app.ui.components.GradientSlider
 import com.tieniilfilo.app.ui.components.PhotoThumb
 import com.tieniilfilo.app.ui.components.StatusChip
 import com.tieniilfilo.app.ui.theme.FrauncesFontFamily
@@ -170,13 +171,12 @@ fun YarnDetailScreen(
                             text = "${"%.0f".format(sliderValue)}%",
                             style = MaterialTheme.typography.bodySmall,
                         )
-                        Slider(
-                            value = sliderValue.coerceIn(0f, 100f),
-                            onValueChange = { sliderValue = it },
+                        GradientSlider(
+                            value = sliderValue.coerceIn(0f, 100f) / 100f,
+                            onValueChange = { sliderValue = it * 100f },
                             onValueChangeFinished = {
                                 viewModel.updateQuantityUsed(y, sliderValue.toDouble())
                             },
-                            valueRange = 0f..100f,
                         )
                     }
                 }
@@ -310,13 +310,9 @@ private fun HeroYarnHeader(
                     }
                 }
             }
-            StatusChip(
-                label = yarn.status.toDisplayString(),
-                chipColor = yarn.status.toChipColor(),
-            )
         }
     }
-}
+    }
 
 @Composable
 private fun DetailRow(label: String, value: String) {

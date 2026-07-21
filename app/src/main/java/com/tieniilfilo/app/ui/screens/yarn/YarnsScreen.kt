@@ -348,6 +348,7 @@ fun YarnListItem(
             StatusChip(
                 label = yarn.status.toDisplayString(),
                 chipColor = yarn.status.toChipColor(),
+                isActive = yarn.status != YarnStatus.ESAURITO,
             )
             if (yarn.isWishlist) {
                 Spacer(modifier = Modifier.width(6.dp))

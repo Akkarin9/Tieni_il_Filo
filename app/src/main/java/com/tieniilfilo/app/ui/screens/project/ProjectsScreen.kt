@@ -238,6 +238,7 @@ fun ProjectListItem(
                 StatusChip(
                     label = project.status.toDisplayString(),
                     chipColor = project.status.toChipColor(),
+                    isActive = project.status == ProjectStatus.IN_CORSO,
                 )
             }
 

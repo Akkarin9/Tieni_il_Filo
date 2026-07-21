@@ -1,6 +1,7 @@
 package com.tieniilfilo.app.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,12 +52,16 @@ fun StatusChip(
     chipColor: ChipColor,
     modifier: Modifier = Modifier,
     dotColor: Color? = null,
+    isActive: Boolean = false,
 ) {
     val bg = chipColor.toColor()
     val content = chipColor.toOnColor()
 
     Surface(
-        modifier = modifier,
+        modifier = modifier.then(
+            if (isActive) Modifier.border(1.5.dp, content.copy(alpha = 0.3f), MaterialTheme.shapes.small)
+            else Modifier
+        ),
         shape = MaterialTheme.shapes.small,
         color = bg,
     ) {
