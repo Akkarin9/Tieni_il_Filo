@@ -202,51 +202,24 @@ fun PatternsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PatternListItem(
     pattern: PatternEntity,
     onClick: () -> Unit,
     onBookmark: () -> Unit,
-    onSwipeDelete: (PatternEntity) -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.EndToStart) {
-                onSwipeDelete(pattern)
-                true
-            } else false
-        },
-    )
 
-    SwipeToDismissBox(
-        state = dismissState,
-        enableDismissFromStartToEnd = false,
-        enableDismissFromEndToStart = true,
-        backgroundContent = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.errorContainer)
-                    .padding(end = 20.dp),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                Icon(Icons.Default.Delete, contentDescription = "Elimina", tint = MaterialTheme.colorScheme.onErrorContainer)
-            }
-        },
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize()
+            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
+            .pressAnimation(isPressed),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
-                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
-                .shadow(1.dp, MaterialTheme.shapes.medium)
-                .animateContentSize()
-                .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
-                .pressAnimation(isPressed),
-        ) {
             Row(
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -286,7 +259,6 @@ fun PatternListItem(
                     )
                 }
             }
-        }
     }
 }
 

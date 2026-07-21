@@ -41,23 +41,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -74,7 +68,6 @@ import com.tieniilfilo.app.ui.components.StatusChip
 import com.tieniilfilo.app.ui.theme.AppIcons
 import com.tieniilfilo.app.ui.theme.pressAnimation
 import com.tieniilfilo.app.ui.theme.staggerEnter
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -90,8 +83,6 @@ fun YarnsScreen(
     var searchExpanded by remember { mutableStateOf(false) }
     var showFilters by remember { mutableStateOf(false) }
     var viewerUri by remember { mutableStateOf<String?>(null) }
-    val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
@@ -112,7 +103,6 @@ fun YarnsScreen(
                 },
             )
         },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -222,13 +212,6 @@ fun YarnsScreen(
                                 onClick = { onYarnClick(yarn.id) },
                                 onPhotoClick = { viewerUri = it },
                                 onPhotoDelete = onPhotoDelete,
-                                onSwipeDelete = {
-                                    viewModel.deleteYarn(it)
-                                    coroutineScope.launch {
-                                        val result = snackbarHostState.showSnackbar("${it.name} eliminato", "ANNULLA", duration = androidx.compose.material3.SnackbarDuration.Long)
-                                        if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) viewModel.undoDeleteYarn()
-                                    }
-                                },
                             )
                         }
                     }
@@ -242,56 +225,25 @@ fun YarnsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun YarnListItem(
     yarn: YarnEntity,
     onClick: () -> Unit,
     onPhotoClick: (String) -> Unit = {},
     onPhotoDelete: (YarnEntity) -> Unit = {},
-    onSwipeDelete: (YarnEntity) -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.EndToStart) {
-                onSwipeDelete(yarn)
-                true
-            } else false
-        },
-    )
 
-    SwipeToDismissBox(
-        state = dismissState,
-        enableDismissFromStartToEnd = false,
-        enableDismissFromEndToStart = true,
-        backgroundContent = {
-            androidx.compose.foundation.layout.Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.errorContainer)
-                    .padding(end = 20.dp),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = "Elimina",
-                    tint = MaterialTheme.colorScheme.onErrorContainer,
-                )
-            }
-        },
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize()
+            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
+            .pressAnimation(isPressed),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
-                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
-                .shadow(1.dp, MaterialTheme.shapes.medium)
-                .animateContentSize()
-                .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
-                .pressAnimation(isPressed),
-        ) {
         Row(
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -402,7 +354,6 @@ fun YarnListItem(
                 Icon(Icons.Default.Favorite, contentDescription = "Desiderio", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(16.dp))
             }
         }
-    }
     }
 }
 
