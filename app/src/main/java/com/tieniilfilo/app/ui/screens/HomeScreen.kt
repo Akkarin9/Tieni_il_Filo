@@ -241,6 +241,7 @@ private fun BentoStatCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
+                .clip(MaterialTheme.shapes.large)
                 .drawBehind {
                     drawRoundRect(
                         brush = Brush.linearGradient(
@@ -309,7 +310,7 @@ private fun ScrollableColorPalette(colors: List<Int>, onYarnClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f), MaterialTheme.shapes.large)
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
                 .padding(vertical = 12.dp),
         ) {
             SectionHeader(
@@ -399,7 +400,7 @@ private fun QuickActionTile(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color.copy(alpha = 0.1f), MaterialTheme.shapes.medium)
+                .background(color.copy(alpha = 0.1f))
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -434,7 +435,7 @@ private fun FeaturedActiveProjects(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f), MaterialTheme.shapes.large)
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
                 .padding(16.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -489,7 +490,7 @@ private fun FeaturedProjectCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(AmbraColor.copy(alpha = 0.08f), MaterialTheme.shapes.medium)
+                .background(AmbraColor.copy(alpha = 0.08f))
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {

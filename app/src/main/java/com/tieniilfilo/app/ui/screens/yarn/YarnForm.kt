@@ -100,9 +100,9 @@ fun YarnFormSheet(
 
     val initialColors = if (initialYarn != null) {
         val colors = parseColorHexes(initialYarn.colorHexes, initialYarn.colorHex)
-        if (colors.isNotEmpty()) colors else listOf(DefaultYarnColors.first())
+        if (colors.isNotEmpty()) colors else emptyList()
     } else {
-        listOf(DefaultYarnColors.first())
+        emptyList()
     }
 
     var name by remember(formKey) { mutableStateOf(initialYarn?.name ?: "") }
