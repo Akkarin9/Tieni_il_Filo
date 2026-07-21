@@ -92,7 +92,6 @@
   <img src="docs/screens/stats.png" width="200" alt="Statistiche">
 </p>
 
-> 💡 Le immagini sopra saranno presto disponibili. Aggiungi i tuoi screenshot nella cartella `docs/screens/` per farli comparire automaticamente.
 
 <br>
 
