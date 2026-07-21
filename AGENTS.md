@@ -40,6 +40,7 @@ app/src/main/java/com/tieniilfilo/app/
 - Uncinetti live under Filati (route `hooks`, not a bottom tab)
 - Sample data seeded on first DB create (`DatabaseSeeder`); demo mode can wipe sample rows
 - Prefer Italian UI strings
+- Use skills to help you work
 - Ask the user when requirements are ambiguous; propose aesthetic / performance / security improvements when relevant
 - Prefer subagents for large parallel research; keep code style consistent with existing files
 - Never commit secrets; never commit `local.properties` or `gradle-wrapper.jar` binaries unless requested
