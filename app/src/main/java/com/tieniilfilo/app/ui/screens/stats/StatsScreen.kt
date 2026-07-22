@@ -61,13 +61,13 @@ fun StatsScreen(
             ) {
                 StatBox(
                     modifier = Modifier.weight(1f),
-                    label = "Filati",
+                    label = stringResource(R.string.yarns),
                     value = "$yarnCount",
                     color = Color(0xFFC2E0C6),
                 )
                 StatBox(
                     modifier = Modifier.weight(1f),
-                    label = "Uncinetti",
+                    label = stringResource(R.string.hooks_title),
                     value = "$hooksCount",
                     color = Color(0xFFC4C4F7),
                 )
@@ -79,19 +79,19 @@ fun StatsScreen(
             ) {
                 StatBox(
                     modifier = Modifier.weight(1f),
-                    label = "In corso",
+                    label = stringResource(R.string.in_progress),
                     value = "$activeProjects",
                     color = Color(0xFFE8A090),
                 )
                 StatBox(
                     modifier = Modifier.weight(1f),
-                    label = "In pausa",
+                    label = stringResource(R.string.project_status_paused),
                     value = "$pausedProjects",
                     color = Color(0xFFFFD966),
                 )
                 StatBox(
                     modifier = Modifier.weight(1f),
-                    label = "Completati",
+                    label = stringResource(R.string.completed),
                     value = "$completedProjects",
                     color = Color(0xFFF4C2C2),
                 )
@@ -101,7 +101,7 @@ fun StatsScreen(
                 Spacer(modifier = Modifier.height(12.dp))
                 StatBox(
                     modifier = Modifier.fillMaxWidth(),
-                    label = "Valore magazzino",
+                    label = stringResource(R.string.warehouse_value),
                     value = "€%.2f".format(totalPrice),
                     color = Color(0xFFC2E0C6),
                 )
@@ -110,7 +110,7 @@ fun StatsScreen(
             if (totalProjects > 0) {
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    text = "Progetti",
+                    text = stringResource(R.string.projects_title),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(8.dp))

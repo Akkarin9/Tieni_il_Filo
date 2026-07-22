@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.tieniilfilo.app.data.local.entity.PatternEntity
 import com.tieniilfilo.app.data.local.entity.ProjectEntity
 import com.tieniilfilo.app.data.local.entity.YarnEntity

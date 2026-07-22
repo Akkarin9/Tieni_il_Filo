@@ -52,11 +52,13 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tieniilfilo.app.R
 import com.tieniilfilo.app.ui.components.SectionHeader
 import com.tieniilfilo.app.ui.screens.project.formatDate
 import com.tieniilfilo.app.ui.theme.HeroAmber
@@ -165,7 +167,7 @@ private fun GreetingBanner(onSettingsClick: () -> Unit) {
         horizontalArrangement = Arrangement.End,
     ) {
         IconButton(onClick = onSettingsClick) {
-            Icon(Icons.Rounded.Settings, contentDescription = "Impostazioni", tint = MaterialTheme.colorScheme.primary)
+            Icon(Icons.Rounded.Settings, contentDescription = stringResource(R.string.settings), tint = MaterialTheme.colorScheme.primary)
         }
     }
 }
@@ -186,7 +188,7 @@ private fun BentoStatCards(
         BentoStatCard(
             modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp),
             icon = Icons.Rounded.ShoppingCart,
-            label = "Filati",
+            label = stringResource(R.string.yarns),
             value = yarnCount,
             startColor = PeachColor,
             endColor = Color(0xFFE8835A),
@@ -199,7 +201,7 @@ private fun BentoStatCards(
             BentoStatCard(
                 modifier = Modifier.weight(1f).heightIn(min = 96.dp),
                 icon = Icons.Rounded.Pending,
-                label = "In corso",
+                label = stringResource(R.string.in_progress),
                 value = activeProjects,
                 startColor = LavenderColor,
                 endColor = Color(0xFF9B6DB5),
@@ -208,7 +210,7 @@ private fun BentoStatCards(
             BentoStatCard(
                 modifier = Modifier.weight(1f).heightIn(min = 96.dp),
                 icon = Icons.Rounded.Celebration,
-                label = "Completati",
+                label = stringResource(R.string.completed),
                 value = completedProjects,
                 startColor = Color(0xFFE8B86C),
                 endColor = Color(0xFFE09F4A),
@@ -314,7 +316,7 @@ private fun ScrollableColorPalette(colors: List<Int>, onYarnClick: () -> Unit) {
                 .padding(vertical = 12.dp),
         ) {
             SectionHeader(
-                title = "I tuoi colori",
+                title = stringResource(R.string.your_colors),
                 modifier = Modifier.padding(horizontal = 16.dp),
                 tintColor = MaterialTheme.colorScheme.tertiary,
             )
@@ -351,14 +353,14 @@ private fun QuickActionGrid(
             QuickActionTile(
                 modifier = Modifier.weight(1f),
                 icon = Icons.Rounded.AutoStories,
-                label = "Schemi",
+                label = stringResource(R.string.patterns),
                 color = SageColor,
                 onClick = onPatternsClick,
             )
             QuickActionTile(
                 modifier = Modifier.weight(1f),
                 icon = Icons.Rounded.PhotoLibrary,
-                label = "Galleria",
+                label = stringResource(R.string.gallery_title),
                 color = CoralColor,
                 onClick = onGalleryClick,
             )
@@ -370,7 +372,7 @@ private fun QuickActionGrid(
             QuickActionTile(
                 modifier = Modifier.weight(1f),
                 icon = Icons.Rounded.Insights,
-                label = "Statistiche",
+                label = stringResource(R.string.stats_title),
                 color = LavenderColor,
                 onClick = onStatsClick,
             )
@@ -447,7 +449,7 @@ private fun FeaturedActiveProjects(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Progetti in corso",
+                    text = stringResource(R.string.active_projects),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -464,7 +466,7 @@ private fun FeaturedActiveProjects(
             }
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(onClick = onSeeAllClick, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Text("Vedi tutti i progetti \u2192")
+                Text(stringResource(R.string.see_all))
             }
         }
     }
