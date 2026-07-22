@@ -113,7 +113,7 @@ fun PatternsScreen(
                         modifier = Modifier.clickable { showSortMenu = true }.padding(horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text("Ordina", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.sort), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         Icon(
                             Icons.Rounded.AutoStories,
@@ -123,8 +123,8 @@ fun PatternsScreen(
                         )
                     }
                     DropdownMenu(expanded = showSortMenu, onDismissRequest = { showSortMenu = false }) {
-                        DropdownMenuItem(text = { Text("Titolo A-Z") }, onClick = { sortMode = 0; showSortMenu = false })
-                        DropdownMenuItem(text = { Text("Più recenti") }, onClick = { sortMode = 1; showSortMenu = false })
+                        DropdownMenuItem(text = { Text(stringResource(R.string.sort_name)) }, onClick = { sortMode = 0; showSortMenu = false })
+                        DropdownMenuItem(text = { Text(stringResource(R.string.sort_recent)) }, onClick = { sortMode = 1; showSortMenu = false })
                     }
                 },
             )
@@ -141,7 +141,7 @@ fun PatternsScreen(
                 onSearch = { searchExpanded = false },
                 active = searchExpanded,
                 onActiveChange = { searchExpanded = it },
-                placeholder = { Text("Cerca schemi...") },
+                placeholder = { Text(stringResource(R.string.search_patterns)) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
             ) {}
@@ -151,13 +151,13 @@ fun PatternsScreen(
                 FilterChip(
                     selected = !showBookmarked && selectedType == null,
                     onClick = { showBookmarked = false; selectedType = null },
-                    label = { Text("Tutti") },
+                    label = { Text(stringResource(R.string.all)) },
                     modifier = Modifier.padding(end = 4.dp, bottom = 4.dp),
                 )
                 FilterChip(
                     selected = showBookmarked,
                     onClick = { showBookmarked = !showBookmarked; selectedType = null },
-                    label = { Text("Preferiti") },
+                    label = { Text(stringResource(R.string.favorites)) },
                     modifier = Modifier.padding(end = 4.dp, bottom = 4.dp),
                 )
                 PatternType.entries.forEach { type ->
@@ -176,9 +176,9 @@ fun PatternsScreen(
             if (filteredPatterns.isEmpty()) {
                 EmptyState(
                     icon = Icons.Rounded.AutoStories,
-                    title = "Nessuno schema",
-                    subtitle = "Aggiungi schemi e pattern per i tuoi progetti",
-                    actionLabel = "Aggiungi schema",
+                    title = stringResource(R.string.no_patterns),
+                    subtitle = stringResource(R.string.no_patterns_sub),
+                    actionLabel = stringResource(R.string.add_pattern),
                     onActionClick = onAddClick,
                     illustration = { com.tieniilfilo.app.ui.components.OpenBookIllustration() },
                 )

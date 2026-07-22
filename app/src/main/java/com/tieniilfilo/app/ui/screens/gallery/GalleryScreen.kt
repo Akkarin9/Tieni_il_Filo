@@ -50,9 +50,9 @@ fun GalleryScreen() {
         if (photos.isEmpty()) {
             EmptyState(
                 modifier = Modifier.padding(padding),
-                icon = Icons.Default.Celebration,
-                title = "Nessuna foto",
-                subtitle = "Completa un progetto per aggiungere foto alla galleria",
+                icon = Icons.Default.Image,
+                title = stringResource(R.string.no_photos),
+                subtitle = stringResource(R.string.no_photos_sub),
                 illustration = { com.tieniilfilo.app.ui.components.CrochetTileIllustration() },
             )
         } else {

@@ -53,9 +53,9 @@ fun HooksScreen(
             EmptyState(
                 modifier = Modifier.padding(padding),
                 icon = Icons.Rounded.Handyman,
-                title = "Nessun uncinetto",
-                subtitle = "Aggiungi il tuo primo uncinetto per iniziare",
-                actionLabel = "Aggiungi uncinetto",
+                title = stringResource(R.string.no_hooks),
+                subtitle = stringResource(R.string.add_first_hook),
+                actionLabel = stringResource(R.string.add_hook),
                 onActionClick = onAddClick,
                 illustration = { com.tieniilfilo.app.ui.components.HookIllustration() },
             )
