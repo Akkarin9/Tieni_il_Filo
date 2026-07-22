@@ -17,6 +17,8 @@ import com.tieniilfilo.app.data.local.entity.HookMaterial
 import com.tieniilfilo.app.ui.components.BottomSheetForm
 import com.tieniilfilo.app.ui.components.ChipSelector
 import com.tieniilfilo.app.ui.components.FormTextField
+import com.tieniilfilo.app.R
+import androidx.compose.ui.res.stringResource
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,14 +35,14 @@ fun HookFormSheet(
     var brand by remember { mutableStateOf("") }
 
     BottomSheetForm(
-        title = "Nuovo uncinetto",
+        title = stringResource(R.string.new_hook),
         isVisible = true,
         onDismiss = onDismiss,
         onConfirm = {
             onSave((sizeMm * 2).roundToInt() / 2.0, material, brand.trim())
             onDismiss()
         },
-        confirmLabel = "Salva uncinetto",
+        confirmLabel = stringResource(R.string.save_hook),
     ) {
         Text(text = "Misura: ${"%.1f".format(sizeMm)} mm")
         Slider(
@@ -51,7 +53,7 @@ fun HookFormSheet(
         )
         Spacer(modifier = Modifier.height(8.dp))
         ChipSelector(
-            label = "Materiale",
+            label = stringResource(R.string.material),
             options = HookMaterial.entries,
             selected = material,
             onSelect = { material = it },

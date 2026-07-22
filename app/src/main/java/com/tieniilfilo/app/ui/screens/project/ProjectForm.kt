@@ -32,6 +32,8 @@ import com.tieniilfilo.app.data.local.entity.ProjectStatus
 import com.tieniilfilo.app.ui.components.BottomSheetForm
 import com.tieniilfilo.app.ui.components.ChipSelector
 import com.tieniilfilo.app.ui.components.FormTextField
+import com.tieniilfilo.app.R
+import androidx.compose.ui.res.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,8 +73,8 @@ fun ProjectFormSheet(
     var showPatternPicker by remember { mutableStateOf(false) }
     val selectedPattern = allPatterns.find { it.id == selectedPatternId }
 
-    val title = if (isEditing) "Modifica progetto" else "Nuovo progetto"
-    val confirmLabel = if (isEditing) "Aggiorna progetto" else "Salva progetto"
+    val title = if (isEditing) stringResource(R.string.edit_project) else stringResource(R.string.new_project)
+    val confirmLabel = if (isEditing) stringResource(R.string.update_project) else stringResource(R.string.save_project)
 
     BottomSheetForm(
         title = title,
@@ -97,23 +99,23 @@ fun ProjectFormSheet(
         },
         confirmLabel = confirmLabel,
     ) {
-        FormTextField(value = name, onValueChange = { name = it }, label = "Nome *")
+        FormTextField(value = name, onValueChange = { name = it }, label = stringResource(R.string.name_required))
         Spacer(modifier = Modifier.height(12.dp))
         ChipSelector(
-            label = "Stato",
+            label = stringResource(R.string.status),
             options = ProjectStatus.entries,
             selected = status,
             onSelect = { status = it },
             labelOf = { it.toDisplayString() },
         )
         Spacer(modifier = Modifier.height(12.dp))
-        FormTextField(value = notes, onValueChange = { notes = it }, label = "Note", singleLine = false)
+        FormTextField(value = notes, onValueChange = { notes = it }, label = stringResource(R.string.notes), singleLine = false)
 
         Spacer(modifier = Modifier.height(12.dp))
-        FormTextField(value = deadline, onValueChange = { deadline = it }, label = "Scadenza (gg/mm/aaaa)", singleLine = true)
+        FormTextField(value = deadline, onValueChange = { deadline = it }, label = stringResource(R.string.deadline_label), singleLine = true)
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Schema collegato", style = MaterialTheme.typography.labelMedium)
+        Text(text = stringResource(R.string.linked_pattern), style = MaterialTheme.typography.labelMedium)
         Spacer(modifier = Modifier.height(6.dp))
         Row(
             modifier = Modifier
@@ -123,14 +125,14 @@ fun ProjectFormSheet(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = if (selectedPattern != null) selectedPattern.title else "Nessuno schema",
+                text = if (selectedPattern != null) selectedPattern.title else stringResource(R.string.no_pattern),
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (selectedPattern != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f),
             )
             if (selectedPattern != null) {
                 IconButton(onClick = { selectedPatternId = null; showPatternPicker = false }) {
-                    Icon(Icons.Default.Close, contentDescription = "Rimuovi schema", modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.remove_pattern), modifier = Modifier.size(18.dp))
                 }
             }
         }
@@ -139,7 +141,7 @@ fun ProjectFormSheet(
     if (showPatternPicker) {
         AlertDialog(
             onDismissRequest = { showPatternPicker = false },
-            title = { Text("Seleziona schema") },
+            title = { Text(stringResource(R.string.select_pattern)) },
             text = {
                 if (allPatterns.isEmpty()) {
                     Text("Nessuno schema disponibile. Creane uno prima.", style = MaterialTheme.typography.bodyMedium)
@@ -168,7 +170,7 @@ fun ProjectFormSheet(
             },
             confirmButton = {
                 TextButton(onClick = { showPatternPicker = false }) {
-                    Text("Chiudi")
+                    Text(stringResource(R.string.close))
                 }
             },
         )

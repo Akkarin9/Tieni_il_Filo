@@ -44,6 +44,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
+import com.tieniilfilo.app.R
+import androidx.compose.ui.res.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,8 +131,8 @@ fun PatternFormSheet(
         }
     }
 
-    val dialogTitle = if (isEditing) "Modifica schema" else "Nuovo schema"
-    val confirmLabel = if (isEditing) "Aggiorna schema" else "Salva schema"
+    val dialogTitle = if (isEditing) stringResource(R.string.edit_pattern) else stringResource(R.string.new_pattern)
+    val confirmLabel = if (isEditing) stringResource(R.string.update_pattern) else stringResource(R.string.save_pattern)
 
     BottomSheetForm(
         title = dialogTitle,
@@ -163,10 +165,10 @@ fun PatternFormSheet(
         },
         confirmLabel = confirmLabel,
     ) {
-        FormTextField(value = title, onValueChange = { title = it }, label = "Titolo *")
+        FormTextField(value = title, onValueChange = { title = it }, label = stringResource(R.string.title_required))
         Spacer(modifier = Modifier.height(12.dp))
         ChipSelector(
-            label = "Tipo",
+            label = stringResource(R.string.type),
             options = PatternType.entries,
             selected = type,
             onSelect = { type = it },
@@ -174,7 +176,7 @@ fun PatternFormSheet(
         )
         Spacer(modifier = Modifier.height(12.dp))
         ChipSelector(
-            label = "Sorgente",
+            label = stringResource(R.string.source_type),
             options = PatternSourceType.entries,
             selected = sourceType,
             onSelect = { sourceType = it; fileUri = null; link = "" },
@@ -217,7 +219,7 @@ fun PatternFormSheet(
                 ) {
                     Icon(Icons.Default.PhotoLibrary, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Galleria")
+                    Text(stringResource(R.string.edit_photo))
                 }
                 OutlinedButton(
                     onClick = { launchCamera() },
@@ -225,11 +227,11 @@ fun PatternFormSheet(
                 ) {
                     Icon(Icons.Default.CameraAlt, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Fotocamera")
+                    Text(stringResource(R.string.camera))
                 }
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
-        FormTextField(value = notes, onValueChange = { notes = it }, label = "Note", singleLine = false)
+        FormTextField(value = notes, onValueChange = { notes = it }, label = stringResource(R.string.notes), singleLine = false)
     }
 }

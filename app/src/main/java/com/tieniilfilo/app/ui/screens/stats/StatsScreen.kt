@@ -122,12 +122,12 @@ fun StatsScreen(
             } else {
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    text = "Nessun dato ancora",
+                    text = stringResource(R.string.no_data_yet),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Inizia ad aggiungere filati e progetti per vedere le statistiche!",
+                    text = stringResource(R.string.no_data_sub),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

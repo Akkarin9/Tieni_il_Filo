@@ -46,10 +46,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tieniilfilo.app.R
 import com.tieniilfilo.app.data.local.entity.PatternEntity
 import com.tieniilfilo.app.data.local.entity.PatternSourceType
 import com.tieniilfilo.app.ui.components.FullScreenImageViewer
@@ -84,16 +87,16 @@ fun PatternDetailScreen(
                 actions = {
                     pattern?.let { pat ->
                         IconButton(onClick = { onEdit(pat) }) {
-                            Icon(Icons.Default.Edit, contentDescription = "Modifica schema")
+                            Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit_pattern))
                         }
                         IconButton(onClick = { viewModel.toggleBookmark(pat) }) {
                             Icon(
                                 imageVector = if (pat.isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                                contentDescription = if (pat.isBookmarked) "Rimuovi preferito" else "Aggiungi preferito",
+                                contentDescription = if (pat.isBookmarked) stringResource(R.string.remove_favorite) else stringResource(R.string.add_favorite),
                             )
                         }
                         IconButton(onClick = { showDeleteDialog = true }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Elimina schema", tint = MaterialTheme.colorScheme.error)
+                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete_pattern), tint = MaterialTheme.colorScheme.error)
                         }
                     }
                 },
@@ -125,9 +128,9 @@ fun PatternDetailScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = when (pat.sourceType) {
-                            PatternSourceType.PDF -> "Documento PDF"
-                            PatternSourceType.IMAGE -> "Immagine"
-                            PatternSourceType.LINK -> "Link esterno"
+                            PatternSourceType.PDF -> stringResource(R.string.document_pdf)
+                            PatternSourceType.IMAGE -> stringResource(R.string.image_label)
+                            PatternSourceType.LINK -> stringResource(R.string.external_link)
                         },
                         style = MaterialTheme.typography.bodyMedium,
                     )
@@ -159,7 +162,7 @@ fun PatternDetailScreen(
                         ) {
                             Icon(
                                 Icons.Default.Close,
-                                contentDescription = "Rimuovi immagine",
+                                contentDescription = stringResource(R.string.remove_image),
                                 tint = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.size(18.dp),
                             )
@@ -188,7 +191,7 @@ fun PatternDetailScreen(
                     ) {
                         Icon(Icons.Default.PictureAsPdf, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Apri PDF")
+                        Text(stringResource(R.string.open_pdf))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedButton(
@@ -197,7 +200,7 @@ fun PatternDetailScreen(
                     ) {
                         Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Rimuovi PDF")
+                        Text(stringResource(R.string.remove_pdf))
                     }
                 }
 
@@ -215,7 +218,7 @@ fun PatternDetailScreen(
                     ) {
                         Icon(Icons.Default.OpenInBrowser, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Apri link")
+                        Text(stringResource(R.string.open_link))
                     }
                 }
 
@@ -239,7 +242,7 @@ fun PatternDetailScreen(
                 }
             }
         } ?: Text(
-            text = "Schema non trovato",
+            text = stringResource(R.string.pattern_not_found),
             modifier = Modifier.padding(padding),
         )
     }
@@ -250,7 +253,7 @@ fun PatternDetailScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Elimina schema") },
+            title = { Text(stringResource(R.string.delete_pattern)) },
             text = { Text("Eliminare ${pattern?.title ?: ""}? L'operazione non può essere annullata.") },
             confirmButton = {
                 TextButton(onClick = {
@@ -267,7 +270,7 @@ fun PatternDetailScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Annulla")
+                    Text(stringResource(R.string.cancel))
                 }
             },
         )

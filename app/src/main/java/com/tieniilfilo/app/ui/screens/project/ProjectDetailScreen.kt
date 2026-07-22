@@ -61,6 +61,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -69,6 +70,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tieniilfilo.app.data.local.entity.PatternEntity
 import com.tieniilfilo.app.data.local.entity.ProjectPhotoEntity
 import com.tieniilfilo.app.data.local.entity.ProjectStatus
+import com.tieniilfilo.app.R
 import com.tieniilfilo.app.ui.components.ConfettiOverlay
 import com.tieniilfilo.app.ui.components.FullScreenImageViewer
 import com.tieniilfilo.app.ui.components.PhotoThumb
@@ -170,15 +172,15 @@ fun ProjectDetailScreen(
                     title = { Text(project?.name ?: "") },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Indietro")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                         }
                     },
                     actions = {
                         IconButton(onClick = { project?.let(onEdit) }) {
-                            Icon(Icons.Default.Edit, contentDescription = "Modifica progetto")
+                            Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit_project))
                         }
                         IconButton(onClick = { showDeleteDialog = true }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Elimina progetto", tint = MaterialTheme.colorScheme.error)
+                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete_project), tint = MaterialTheme.colorScheme.error)
                         }
                     },
                 )
@@ -309,7 +311,7 @@ fun ProjectDetailScreen(
                 StitchDivider(modifier = Modifier.padding(vertical = 4.dp))
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "Foto progresso", style = MaterialTheme.typography.titleMedium)
+                Text(text = stringResource(R.string.progress_photos), style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -323,7 +325,7 @@ fun ProjectDetailScreen(
                         ) {
                             Icon(Icons.Default.PhotoLibrary, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Galleria", style = MaterialTheme.typography.labelSmall)
+                            Text(stringResource(R.string.edit_photo), style = MaterialTheme.typography.labelSmall)
                         }
                         OutlinedButton(
                             onClick = { launchCamera() },
@@ -331,7 +333,7 @@ fun ProjectDetailScreen(
                         ) {
                             Icon(Icons.Default.CameraAlt, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Fotocamera", style = MaterialTheme.typography.labelSmall)
+                            Text(stringResource(R.string.camera), style = MaterialTheme.typography.labelSmall)
                         }
                     }
                     if (photos.isNotEmpty()) {
@@ -347,7 +349,7 @@ fun ProjectDetailScreen(
                                         ) {
                                             Icon(
                                                 Icons.Default.Delete,
-                                                contentDescription = "Elimina foto",
+                                                contentDescription = stringResource(R.string.delete_photo_btn),
                                                 tint = MaterialTheme.colorScheme.error,
                                                 modifier = Modifier.size(18.dp),
                                             )
@@ -372,7 +374,7 @@ fun ProjectDetailScreen(
 
                     if (proj.status == ProjectStatus.COMPLETATO) {
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = "Valutazione", style = MaterialTheme.typography.titleMedium)
+                        Text(text = stringResource(R.string.rating_label), style = MaterialTheme.typography.titleMedium)
                         Spacer(modifier = Modifier.height(6.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             for (i in 1..5) {
@@ -415,7 +417,7 @@ fun ProjectDetailScreen(
                         ) {
                             Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Condividi progetto")
+                            Text(stringResource(R.string.share_project))
                         }
                     }
 
@@ -431,12 +433,12 @@ fun ProjectDetailScreen(
                         ) {
                             Icon(Icons.Default.Celebration, contentDescription = null)
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Segna come completato")
+                            Text(stringResource(R.string.mark_completed))
                         }
                     }
                 }
             } ?: Text(
-                text = "Progetto non trovato",
+                text = stringResource(R.string.project_not_found),
                 modifier = Modifier.padding(padding),
             )
         }
@@ -451,7 +453,7 @@ fun ProjectDetailScreen(
         if (showDeleteDialog) {
             AlertDialog(
                 onDismissRequest = { showDeleteDialog = false },
-                title = { Text("Elimina progetto") },
+                title = { Text(stringResource(R.string.delete_project)) },
                 text = { Text("Eliminare ${project?.name ?: ""}? L'operazione non può essere annullata.") },
                 confirmButton = {
                     TextButton(onClick = {
@@ -468,7 +470,7 @@ fun ProjectDetailScreen(
                 },
                 dismissButton = {
                     TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Annulla")
+                        Text(stringResource(R.string.cancel))
                     }
                 },
             )

@@ -61,6 +61,8 @@ import com.tieniilfilo.app.ui.components.StitchDivider
 import com.tieniilfilo.app.ui.theme.FrauncesFontFamily
 import com.tieniilfilo.app.ui.theme.HeroCoral
 import com.tieniilfilo.app.ui.theme.HeroAmber
+import com.tieniilfilo.app.R
+import androidx.compose.ui.res.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,16 +87,16 @@ fun YarnDetailScreen(
                 title = { Text(yarn?.name ?: "") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Indietro")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 actions = {
                     yarn?.let { y ->
                         IconButton(onClick = { onEdit(y) }) {
-                            Icon(Icons.Default.Edit, contentDescription = "Modifica filato")
+                            Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit_yarn_btn))
                         }
                         IconButton(onClick = { showDeleteDialog = true }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Elimina filato", tint = MaterialTheme.colorScheme.error)
+                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete_yarn), tint = MaterialTheme.colorScheme.error)
                         }
                     }
                 },
@@ -131,7 +133,7 @@ fun YarnDetailScreen(
                 } else {
                     y.composition.displayText()
                 }
-                DetailRow(label = "Composizione", value = compDisplay)
+                DetailRow(label = stringResource(R.string.composition_label), value = compDisplay)
 
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(text = "Quantità", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
@@ -143,17 +145,17 @@ fun YarnDetailScreen(
                 Text(text = qtyParts.joinToString(" · "), style = MaterialTheme.typography.bodyMedium)
 
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "Fonte", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+                Text(text = stringResource(R.string.source), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (y.yarnSource == YarnSource.NEGOZIO_FISICO) {
                         Icon(Icons.Default.Store, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = if (y.storeName.isNotBlank()) y.storeName else "Negozio fisico", style = MaterialTheme.typography.bodyMedium)
+                        Text(text = if (y.storeName.isNotBlank()) y.storeName else stringResource(R.string.physical_store), style = MaterialTheme.typography.bodyMedium)
                     } else {
                         Icon(Icons.Default.Link, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = if (y.storeLink.isNotBlank()) y.storeLink else "Online", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
+                        Text(text = if (y.storeLink.isNotBlank()) y.storeLink else stringResource(R.string.online), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
                     }
                 }
 
@@ -192,7 +194,7 @@ fun YarnDetailScreen(
                         ),
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
-                            Text(text = "Note", style = MaterialTheme.typography.labelMedium)
+                            Text(text = stringResource(R.string.notes), style = MaterialTheme.typography.labelMedium)
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(text = y.notes, style = MaterialTheme.typography.bodyMedium)
                         }
@@ -200,7 +202,7 @@ fun YarnDetailScreen(
                 }
             }
         } ?: Text(
-            text = "Filato non trovato",
+            text = stringResource(R.string.yarn_not_found),
             modifier = Modifier.padding(padding),
         )
     }
@@ -210,7 +212,7 @@ fun YarnDetailScreen(
         if (showDeleteDialog) {
             AlertDialog(
                 onDismissRequest = { showDeleteDialog = false },
-                title = { Text("Elimina filato") },
+                title = { Text(stringResource(R.string.delete_yarn)) },
                 text = { Text("Eliminare ${yarn?.name ?: ""}? L'operazione non può essere annullata.") },
                 confirmButton = {
                     TextButton(onClick = {
@@ -222,12 +224,12 @@ fun YarnDetailScreen(
                         }
                         onBack()
                     }) {
-                        Text("Elimina", color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Annulla")
+                        Text(stringResource(R.string.cancel))
                     }
                 },
             )
@@ -278,7 +280,7 @@ private fun HeroYarnHeader(
                             modifier = Modifier.size(22.dp).background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.45f), androidx.compose.foundation.shape.CircleShape),
                             contentAlignment = Alignment.Center,
                         ) {
-                            Icon(androidx.compose.material.icons.Icons.Default.Close, contentDescription = "Rimuovi foto", tint = androidx.compose.ui.graphics.Color.White, modifier = Modifier.size(14.dp))
+                            Icon(androidx.compose.material.icons.Icons.Default.Close, contentDescription = stringResource(R.string.delete_photo), tint = androidx.compose.ui.graphics.Color.White, modifier = Modifier.size(14.dp))
                         }
                     }
                 }

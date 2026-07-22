@@ -48,8 +48,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.gson.Gson
 import com.tieniilfilo.app.data.local.entity.YarnComposition
-import com.tieniilfilo.app.data.local.entity.YarnEntity
 import com.tieniilfilo.app.data.local.entity.YarnSource
+import com.tieniilfilo.app.data.local.entity.YarnEntity
+import com.tieniilfilo.app.R
 import com.tieniilfilo.app.ui.components.BottomSheetForm
 import com.tieniilfilo.app.ui.components.ChipSelector
 import com.tieniilfilo.app.ui.components.DefaultYarnColors
@@ -62,6 +63,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
+import androidx.compose.ui.res.stringResource
 
 private val gson = Gson()
 
@@ -183,8 +185,8 @@ fun YarnFormSheet(
         }
     }
 
-    val title = if (isEditing) "Modifica filato" else "Nuovo filato"
-    val confirmLabel = if (isEditing) "Aggiorna filato" else "Salva filato"
+    val title = if (isEditing) stringResource(R.string.edit_yarn) else stringResource(R.string.new_yarn)
+    val confirmLabel = if (isEditing) stringResource(R.string.update_yarn) else stringResource(R.string.save_yarn)
 
     BottomSheetForm(
         title = title,
@@ -241,11 +243,11 @@ fun YarnFormSheet(
         },
         confirmLabel = confirmLabel,
     ) {
-        FormTextField(value = name, onValueChange = { name = it }, label = "Nome *")
+        FormTextField(value = name, onValueChange = { name = it }, label = stringResource(R.string.name_required))
         Spacer(modifier = Modifier.height(8.dp))
-        FormTextField(value = brand, onValueChange = { brand = it }, label = "Marca")
+        FormTextField(value = brand, onValueChange = { brand = it }, label = stringResource(R.string.brand))
         Spacer(modifier = Modifier.height(8.dp))
-        FormTextField(value = colorName, onValueChange = { colorName = it }, label = "Nome colore")
+        FormTextField(value = colorName, onValueChange = { colorName = it }, label = stringResource(R.string.color_name))
         Spacer(modifier = Modifier.height(12.dp))
         MultiColorPickerRow(
             colors = DefaultYarnColors,
@@ -261,7 +263,7 @@ fun YarnFormSheet(
         Spacer(modifier = Modifier.height(12.dp))
 
         ChipSelector(
-            label = "Composizione",
+            label = stringResource(R.string.composition_label),
             options = YarnComposition.entries,
             selected = composition,
             onSelect = { composition = it },
@@ -280,36 +282,36 @@ fun YarnFormSheet(
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Quantità", style = MaterialTheme.typography.labelMedium)
         Spacer(modifier = Modifier.height(6.dp))
-        FormTextField(value = quantityBalls, onValueChange = { quantityBalls = it.filter { c -> c.isDigit() || c == '.' } }, label = "Gomitoli", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
+        FormTextField(value = quantityBalls, onValueChange = { quantityBalls = it.filter { c -> c.isDigit() || c == '.' } }, label = stringResource(R.string.balls), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
         Spacer(modifier = Modifier.height(6.dp))
-        FormTextField(value = quantityGrams, onValueChange = { quantityGrams = it.filter { c -> c.isDigit() || c == '.' } }, label = "Grammi", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
+        FormTextField(value = quantityGrams, onValueChange = { quantityGrams = it.filter { c -> c.isDigit() || c == '.' } }, label = stringResource(R.string.grams), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
         Spacer(modifier = Modifier.height(6.dp))
-        FormTextField(value = quantityMeters, onValueChange = { quantityMeters = it.filter { c -> c.isDigit() || c == '.' } }, label = "Metri", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
+        FormTextField(value = quantityMeters, onValueChange = { quantityMeters = it.filter { c -> c.isDigit() || c == '.' } }, label = stringResource(R.string.meters), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
 
         Spacer(modifier = Modifier.height(16.dp))
         FormTextField(value = unitPrice, onValueChange = { unitPrice = it.filter { c -> c.isDigit() || c == '.' } }, label = "Prezzo unitario (€)", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal))
         Spacer(modifier = Modifier.height(12.dp))
-        Text(text = "Fonte", style = MaterialTheme.typography.labelMedium)
+        Text(text = stringResource(R.string.source), style = MaterialTheme.typography.labelMedium)
         Spacer(modifier = Modifier.height(6.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
                 selected = yarnSource == YarnSource.NEGOZIO_FISICO,
                 onClick = { yarnSource = YarnSource.NEGOZIO_FISICO },
-                label = { Text("Negozio fisico") },
+                label = { Text(stringResource(R.string.physical_store)) },
                 leadingIcon = { Icon(Icons.Default.Store, contentDescription = null, modifier = Modifier.size(18.dp)) },
             )
             FilterChip(
                 selected = yarnSource == YarnSource.ONLINE,
                 onClick = { yarnSource = YarnSource.ONLINE },
-                label = { Text("Online") },
+                label = { Text(stringResource(R.string.online)) },
                 leadingIcon = { Icon(Icons.Default.Link, contentDescription = null, modifier = Modifier.size(18.dp)) },
             )
         }
         Spacer(modifier = Modifier.height(6.dp))
         if (yarnSource == YarnSource.NEGOZIO_FISICO) {
-            FormTextField(value = storeName, onValueChange = { storeName = it }, label = "Nome negozio")
+            FormTextField(value = storeName, onValueChange = { storeName = it }, label = stringResource(R.string.store_name))
         } else {
-            FormTextField(value = storeLink, onValueChange = { storeLink = it }, label = "Link / URL")
+            FormTextField(value = storeLink, onValueChange = { storeLink = it }, label = stringResource(R.string.store_link))
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -327,7 +329,7 @@ fun YarnFormSheet(
         )
 
         Spacer(modifier = Modifier.height(12.dp))
-        FormTextField(value = notes, onValueChange = { notes = it }, label = "Note", singleLine = false)
+        FormTextField(value = notes, onValueChange = { notes = it }, label = stringResource(R.string.notes), singleLine = false)
         Spacer(modifier = Modifier.height(12.dp))
         if (photoPath != null) {
             PhotoThumb(path = photoPath, size = 96.dp)
@@ -345,7 +347,7 @@ fun YarnFormSheet(
             ) {
                 Icon(Icons.Default.PhotoLibrary, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("Galleria")
+                Text(stringResource(R.string.edit_photo))
             }
             OutlinedButton(
                 onClick = { launchCamera() },
@@ -353,7 +355,7 @@ fun YarnFormSheet(
             ) {
                 Icon(Icons.Default.CameraAlt, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("Fotocamera")
+                Text(stringResource(R.string.camera))
             }
             if (photoPath != null) {
                 OutlinedButton(
@@ -362,7 +364,7 @@ fun YarnFormSheet(
                 ) {
                     Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Rimuovi")
+                    Text(stringResource(R.string.remove_photo_btn))
                 }
             }
         }
