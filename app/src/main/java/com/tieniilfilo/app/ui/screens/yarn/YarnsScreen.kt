@@ -100,7 +100,7 @@ fun YarnsScreen(
                     ) {
                         Icon(AppIcons.CrochetHook, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Uncinetti", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                        Text(stringResource(R.string.hooks_access), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                     }
                 },
             )
@@ -118,7 +118,7 @@ fun YarnsScreen(
                 onSearch = { viewModel.updateSearchQuery(it) },
                 active = searchExpanded,
                 onActiveChange = { searchExpanded = it },
-                placeholder = { Text("Cerca filati...") },
+                placeholder = { Text(stringResource(R.string.search_yarns)) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -135,7 +135,7 @@ fun YarnsScreen(
                 FilterChip(
                     selected = showFilters,
                     onClick = { showFilters = !showFilters },
-                    label = { Text("Filtri") },
+                    label = { Text(stringResource(R.string.filters)) },
                     leadingIcon = { Icon(Icons.Default.FilterList, contentDescription = null, modifier = Modifier.size(16.dp)) },
                 )
                 if (filter.isActive) {
@@ -143,7 +143,7 @@ fun YarnsScreen(
                     FilterChip(
                         selected = false,
                         onClick = { viewModel.clearFilters() },
-                        label = { Text("Azzera") },
+                        label = { Text(stringResource(R.string.clear_filters)) },
                         leadingIcon = { Icon(Icons.Default.Clear, contentDescription = null, modifier = Modifier.size(16.dp)) },
                     )
                 }
@@ -153,40 +153,39 @@ fun YarnsScreen(
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     Spacer(modifier = Modifier.height(8.dp))
                     // Status filters
-                    Text("Stato", style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.status), style = MaterialTheme.typography.labelMedium)
                     FlowRow {
                         YarnStatus.entries.forEach { status ->
                             val selected = filter.status == status
                             FilterChip(
                                 selected = selected,
                                 onClick = { viewModel.setStatusFilter(status) },
-                                label = { Text(status.toDisplayString()) },
+                                label = { Text(status.displayText()) },
                                 modifier = Modifier.padding(end = 4.dp, bottom = 4.dp),
                             )
                         }
                     }
                     // Composition filters
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text("Composizione", style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.composition), style = MaterialTheme.typography.labelMedium)
                     FlowRow {
                         YarnComposition.entries.forEach { comp ->
                             val selected = filter.composition == comp
                             FilterChip(
                                 selected = selected,
                                 onClick = { viewModel.setCompositionFilter(comp) },
-                                label = { Text(comp.toDisplayString()) },
+                                label = { Text(comp.displayText()) },
                                 modifier = Modifier.padding(end = 4.dp, bottom = 4.dp),
                             )
                         }
                     }
-                    // Wishlist filter
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text("Altro", style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.sort), style = MaterialTheme.typography.labelMedium)
                     FlowRow {
                         FilterChip(
                             selected = filter.showOnlyWishlist,
                             onClick = { viewModel.toggleWishlistFilter() },
-                            label = { Text("Lista desideri") },
+                            label = { Text(stringResource(R.string.wishlist)) },
                             leadingIcon = { Icon(Icons.Default.Favorite, contentDescription = null, modifier = Modifier.size(16.dp)) },
                         )
                     }
@@ -196,9 +195,9 @@ fun YarnsScreen(
             if (yarns.isEmpty()) {
                 EmptyState(
                     icon = Icons.Default.FilterList,
-                    title = "Nessun filato trovato",
-                    subtitle = "Prova a cambiare i filtri o aggiungi un nuovo filato",
-                    actionLabel = "Aggiungi filato",
+                    title = stringResource(R.string.no_yarns),
+                    subtitle = stringResource(R.string.no_yarns_sub),
+                    actionLabel = stringResource(R.string.add_yarn),
                     onActionClick = onAddClick,
                     illustration = { com.tieniilfilo.app.ui.components.SkeinIllustration() },
                 )
@@ -331,9 +330,9 @@ fun YarnListItem(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     val compText = if (yarn.composition in setOf(YarnComposition.MISTO, YarnComposition.ALTRO) && !yarn.customComposition.isNullOrBlank()) {
-                        "${yarn.composition.toDisplayString()}: ${yarn.customComposition}"
+                        "${yarn.composition.displayText()}: ${yarn.customComposition}"
                     } else {
-                        yarn.composition.toDisplayString()
+                        yarn.composition.displayText()
                     }
                     Text(
                         text = compText,
@@ -348,13 +347,13 @@ fun YarnListItem(
             }
 
             StatusChip(
-                label = yarn.status.toDisplayString(),
+                label = yarn.status.displayText(),
                 chipColor = yarn.status.toChipColor(),
                 isActive = yarn.status != YarnStatus.ESAURITO,
             )
             if (yarn.isWishlist) {
                 Spacer(modifier = Modifier.width(6.dp))
-                Icon(Icons.Default.Favorite, contentDescription = "Desiderio", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(16.dp))
+                Icon(Icons.Default.Favorite, contentDescription = stringResource(R.string.wishlist_indicator), tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(16.dp))
             }
         }
     }
@@ -392,6 +391,25 @@ fun YarnComposition.toDisplayString(): String = when (this) {
     YarnComposition.LINO -> "Lino"
     YarnComposition.ALTRO -> "Altro"
 }
+
+@Composable fun YarnStatus.displayText() = stringResource(when (this) {
+    YarnStatus.DISPONIBILE -> R.string.yarn_status_available
+    YarnStatus.IN_USO -> R.string.yarn_status_in_use
+    YarnStatus.ESAURITO -> R.string.yarn_status_exhausted
+})
+
+@Composable fun YarnComposition.displayText() = stringResource(when (this) {
+    YarnComposition.LANA -> R.string.yarn_comp_wool
+    YarnComposition.COTONE -> R.string.yarn_comp_cotton
+    YarnComposition.MISTO -> R.string.yarn_comp_blend
+    YarnComposition.ACRILICO -> R.string.yarn_comp_acrylic
+    YarnComposition.ALPACA -> R.string.yarn_comp_alpaca
+    YarnComposition.MERINO -> R.string.yarn_comp_merino
+    YarnComposition.BAMBOO -> R.string.yarn_comp_bamboo
+    YarnComposition.SETA -> R.string.yarn_comp_silk
+    YarnComposition.LINO -> R.string.yarn_comp_linen
+    YarnComposition.ALTRO -> R.string.yarn_comp_other
+})
 
 fun parseColorHexes(json: String?, fallback: Int): List<Int> {
     if (!json.isNullOrBlank()) {

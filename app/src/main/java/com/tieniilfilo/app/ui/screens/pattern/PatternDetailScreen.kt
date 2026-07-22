@@ -109,7 +109,7 @@ fun PatternDetailScreen(
                     .padding(16.dp),
             ) {
                 Text(
-                    text = pat.type.toDisplayString(),
+                    text = pat.type.displayText(),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )

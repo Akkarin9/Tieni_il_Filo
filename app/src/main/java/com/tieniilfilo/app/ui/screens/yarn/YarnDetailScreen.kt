@@ -127,9 +127,9 @@ fun YarnDetailScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
                 val compDisplay = if (y.composition in setOf(YarnComposition.MISTO, YarnComposition.ALTRO) && !y.customComposition.isNullOrBlank()) {
-                    "${y.composition.toDisplayString()}: ${y.customComposition}"
+                    "${y.composition.displayText()}: ${y.customComposition}"
                 } else {
-                    y.composition.toDisplayString()
+                    y.composition.displayText()
                 }
                 DetailRow(label = "Composizione", value = compDisplay)
 

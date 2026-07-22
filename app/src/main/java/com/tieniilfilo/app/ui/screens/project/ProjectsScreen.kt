@@ -116,7 +116,7 @@ fun ProjectsScreen(
                         modifier = Modifier.clickable { showSortMenu = true }.padding(horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text("Ordina", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.sort), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(modifier = Modifier.width(4.dp))
                         Icon(
                             Icons.Rounded.Schedule,
@@ -126,9 +126,9 @@ fun ProjectsScreen(
                         )
                     }
                     DropdownMenu(expanded = showSortMenu, onDismissRequest = { showSortMenu = false }) {
-                        DropdownMenuItem(text = { Text("Nome A-Z") }, onClick = { sortMode = 0; showSortMenu = false })
-                        DropdownMenuItem(text = { Text("Più recenti") }, onClick = { sortMode = 1; showSortMenu = false })
-                        DropdownMenuItem(text = { Text("Scadenza") }, onClick = { sortMode = 2; showSortMenu = false })
+                        DropdownMenuItem(text = { Text(stringResource(R.string.sort_name)) }, onClick = { sortMode = 0; showSortMenu = false })
+                        DropdownMenuItem(text = { Text(stringResource(R.string.sort_recent)) }, onClick = { sortMode = 1; showSortMenu = false })
+                        DropdownMenuItem(text = { Text(stringResource(R.string.sort_deadline)) }, onClick = { sortMode = 2; showSortMenu = false })
                     }
                 },
             )
@@ -145,7 +145,7 @@ fun ProjectsScreen(
                 onSearch = { searchExpanded = false },
                 active = searchExpanded,
                 onActiveChange = { searchExpanded = it },
-                placeholder = { Text("Cerca progetti...") },
+                placeholder = { Text(stringResource(R.string.search_projects)) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
             ) {}
@@ -155,7 +155,7 @@ fun ProjectsScreen(
                 FilterChip(
                     selected = selectedStatus == null,
                     onClick = { selectedStatus = null },
-                    label = { Text("Tutti") },
+                    label = { Text(stringResource(R.string.all)) },
                     modifier = Modifier.padding(end = 4.dp, bottom = 4.dp),
                 )
                 ProjectStatus.entries.forEach { status ->
@@ -172,7 +172,7 @@ fun ProjectsScreen(
                                     tint = status.toColor(),
                                     modifier = Modifier.padding(end = 4.dp),
                                 )
-                                Text(status.toDisplayString())
+                                Text(status.displayText())
                             }
                         },
                         modifier = Modifier.padding(end = 4.dp, bottom = 4.dp),
@@ -183,9 +183,9 @@ fun ProjectsScreen(
             if (filteredProjects.isEmpty()) {
                 EmptyState(
                     icon = Icons.Rounded.Palette,
-                    title = "Nessun progetto",
-                    subtitle = "Inizia il tuo primo progetto creativo!",
-                    actionLabel = "Aggiungi progetto",
+                    title = stringResource(R.string.no_projects),
+                    subtitle = stringResource(R.string.no_projects_sub),
+                    actionLabel = stringResource(R.string.add_project),
                     onActionClick = onAddClick,
                     illustration = { com.tieniilfilo.app.ui.components.BasketEmptyIllustration() },
                 )
@@ -238,7 +238,7 @@ fun ProjectListItem(
                     modifier = Modifier.weight(1f),
                 )
                 StatusChip(
-                    label = project.status.toDisplayString(),
+                    label = project.status.displayText(),
                     chipColor = project.status.toChipColor(),
                     isActive = project.status == ProjectStatus.IN_CORSO,
                 )
@@ -327,6 +327,14 @@ fun ProjectStatus.toDisplayString(): String = when (this) {
     ProjectStatus.COMPLETATO -> "Completato"
     ProjectStatus.DA_INIZIARE -> "Da iniziare"
 }
+
+@Composable
+fun ProjectStatus.displayText(): String = stringResource(when (this) {
+    ProjectStatus.IN_CORSO -> R.string.project_status_in_progress
+    ProjectStatus.IN_PAUSA -> R.string.project_status_paused
+    ProjectStatus.COMPLETATO -> R.string.project_status_completed_label
+    ProjectStatus.DA_INIZIARE -> R.string.project_status_to_start
+})
 
 fun ProjectStatus.toChipColor(): ChipColor = when (this) {
     ProjectStatus.IN_CORSO -> ChipColor.GREEN

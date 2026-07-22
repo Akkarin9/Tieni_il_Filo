@@ -167,7 +167,7 @@ fun PatternsScreen(
                             selectedType = if (selectedType == type) null else type
                             showBookmarked = false
                         },
-                        label = { Text(type.toDisplayString()) },
+                        label = { Text(type.displayText()) },
                         modifier = Modifier.padding(end = 4.dp, bottom = 4.dp),
                     )
                 }
@@ -238,7 +238,7 @@ fun PatternListItem(
                         style = MaterialTheme.typography.titleSmall,
                     )
                     Text(
-                        text = pattern.type.toDisplayString(),
+                        text = pattern.type.displayText(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -271,6 +271,16 @@ fun PatternType.toDisplayString(): String = when (this) {
     PatternType.CASA -> "Casa"
     PatternType.ALTRO -> "Altro"
 }
+
+@Composable
+fun PatternType.displayText(): String = stringResource(when (this) {
+    PatternType.AMIGURUMI -> R.string.pattern_type_amigurumi
+    PatternType.ABBIGLIAMENTO -> R.string.pattern_type_clothing
+    PatternType.ACCESSORI -> R.string.pattern_type_accessories
+    PatternType.COPERTE -> R.string.pattern_type_blankets
+    PatternType.CASA -> R.string.pattern_type_home
+    PatternType.ALTRO -> R.string.pattern_type_other
+})
 
 fun PatternSourceType.toIcon() = when (this) {
     PatternSourceType.PDF -> Icons.Rounded.PictureAsPdf

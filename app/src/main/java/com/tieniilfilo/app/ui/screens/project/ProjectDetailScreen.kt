@@ -193,7 +193,7 @@ fun ProjectDetailScreen(
                         .padding(16.dp),
                 ) {
                     StatusChip(
-                        label = proj.status.toDisplayString(),
+                        label = proj.status.displayText(),
                         chipColor = proj.status.toChipColor(),
                         isActive = proj.status == ProjectStatus.IN_CORSO,
                     )

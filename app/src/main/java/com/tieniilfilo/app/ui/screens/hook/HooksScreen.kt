@@ -120,7 +120,7 @@ fun HookListItem(hook: HookEntity) {
                 Spacer(modifier = Modifier.width(8.dp))
             }
             Text(
-                text = hook.material.toDisplayString(),
+                text = hook.material.displayText(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -136,3 +136,13 @@ fun HookMaterial.toDisplayString(): String = when (this) {
     HookMaterial.LEGNO -> "Legno"
     HookMaterial.ALTRO -> "Altro"
 }
+
+@Composable
+fun HookMaterial.displayText(): String = stringResource(when (this) {
+    HookMaterial.METALLO -> R.string.hook_material_metal
+    HookMaterial.BAMBOO -> R.string.hook_material_bamboo
+    HookMaterial.ERGONOMICO -> R.string.hook_material_ergonomic
+    HookMaterial.PLASTICA -> R.string.hook_material_plastic
+    HookMaterial.LEGNO -> R.string.hook_material_wood
+    HookMaterial.ALTRO -> R.string.hook_material_other
+})
