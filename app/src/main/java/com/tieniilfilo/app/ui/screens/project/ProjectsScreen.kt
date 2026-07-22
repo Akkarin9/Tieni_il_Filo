@@ -64,6 +64,8 @@ import com.tieniilfilo.app.ui.components.EmptyState
 import com.tieniilfilo.app.ui.components.StatusChip
 import com.tieniilfilo.app.ui.theme.pressAnimation
 import com.tieniilfilo.app.ui.theme.staggerEnter
+import androidx.compose.ui.res.stringResource
+import com.tieniilfilo.app.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -108,7 +110,7 @@ fun ProjectsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Progetti") },
+                title = { Text(stringResource(R.string.projects_title)) },
                 actions = {
                     Row(
                         modifier = Modifier.clickable { showSortMenu = true }.padding(horizontal = 8.dp),

@@ -49,6 +49,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import com.tieniilfilo.app.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -88,7 +90,7 @@ fun YarnsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Filati") },
+                title = { Text(stringResource(R.string.yarns_title)) },
                 actions = {
                     Row(
                         modifier = Modifier

@@ -34,8 +34,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.tieniilfilo.app.R
 import kotlinx.coroutines.launch
 
 private data class OnboardingPage(
@@ -50,9 +52,9 @@ fun OnboardingScreen(onFinished: () -> Unit) {
     Log.d("TIENI", "OnboardingScreen rendering")
 
     val pages = listOf(
-        OnboardingPage(Icons.Rounded.Palette, "Benvenuta in Tieni il Filo", "L'app calda e semplice per organizzare filati, uncinetti e progetti di uncinetto."),
-        OnboardingPage(Icons.Default.Inventory2, "Il tuo magazzino", "Registra filati con colore, quantità e stato. Gli uncinetti stanno nella sezione Filati."),
-        OnboardingPage(Icons.Default.AutoAwesome, "Progetti e schemi", "Segui i lavori in corso, completa con confetti, e tieni gli schemi preferiti a portata di mano."),
+        OnboardingPage(Icons.Rounded.Palette, stringResource(R.string.onboarding_welcome), stringResource(R.string.onboarding_welcome_sub)),
+        OnboardingPage(Icons.Default.Inventory2, stringResource(R.string.onboarding_storage), stringResource(R.string.onboarding_storage_sub)),
+        OnboardingPage(Icons.Default.AutoAwesome, stringResource(R.string.onboarding_projects), stringResource(R.string.onboarding_projects_sub)),
     )
     val illustrationForPage: @Composable (Int) -> Unit = { page ->
         when (page) {
@@ -124,10 +126,10 @@ fun OnboardingScreen(onFinished: () -> Unit) {
                 Button(
                     onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text("Avanti") }
-                TextButton(onClick = onFinished) { Text("Salta") }
+                ) { Text(stringResource(R.string.onboarding_next)) }
+                TextButton(onClick = onFinished) { Text(stringResource(R.string.onboarding_skip)) }
             } else {
-                Button(onClick = onFinished, modifier = Modifier.fillMaxWidth()) { Text("Inizia a creare") }
+                Button(onClick = onFinished, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.onboarding_start)) }
             }
         }
     }

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Upload
@@ -49,6 +50,7 @@ import androidx.lifecycle.ViewModel
 import com.tieniilfilo.app.R
 import androidx.lifecycle.viewModelScope
 import com.tieniilfilo.app.data.backup.BackupManager
+import com.tieniilfilo.app.data.repository.YarnRepository
 import com.tieniilfilo.app.util.PreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -60,6 +62,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val preferences: PreferencesManager,
     private val backupManager: BackupManager,
+    private val yarnRepository: YarnRepository,
 ) : ViewModel() {
     val darkMode = preferences.darkMode
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
@@ -75,6 +78,25 @@ class SettingsViewModel @Inject constructor(
     fun setUseDynamicColors(enabled: Boolean) = preferences.setUseDynamicColors(enabled)
 
     fun setLanguage(lang: String) = preferences.setLanguage(lang)
+
+    suspend fun generateYarnCsv(): String {
+        val yarns = yarnRepository.getAllYarnsBlocking()
+        val sb = StringBuilder()
+        sb.appendLine("Nome,Marca,Colore,Composizione,Gomitoli,Grammi,Metri,Prezzo,Stato")
+        for (y in yarns) {
+            val name = y.name.replace(",", " ")
+            val brand = y.brand.replace(",", " ")
+            val color = y.colorName.replace(",", " ")
+            val comp = y.composition.name
+            val balls = if (y.quantityBallsTotal > 0) y.quantityBallsTotal.toInt().toString() else ""
+            val grams = if (y.quantityGramsTotal > 0) y.quantityGramsTotal.toInt().toString() else ""
+            val meters = if (y.quantityMetersTotal > 0) y.quantityMetersTotal.toInt().toString() else ""
+            val price = y.unitPrice?.let { "\"€ %.2f\"".format(it).replace(".", ",") } ?: ""
+            val status = y.status.name
+            sb.appendLine("$name,$brand,$color,$comp,$balls,$grams,$meters,$price,$status")
+        }
+        return sb.toString()
+    }
 
     suspend fun export(uri: Uri): Boolean = backupManager.exportToUri(uri)
 
@@ -118,10 +140,27 @@ fun SettingsScreen(
         }
     }
 
+    val csvLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/csv"),
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            try {
+                val csv = viewModel.generateYarnCsv()
+                context.contentResolver.openOutputStream(uri)?.use { out ->
+                    out.write(csv.toByteArray(Charsets.UTF_8))
+                }
+                snackbarHostState.showSnackbar("CSV esportato")
+            } catch (_: Exception) {
+                snackbarHostState.showSnackbar("Esportazione CSV fallita")
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Impostazioni") },
+                title = { Text(stringResource(R.string.settings)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Indietro")
@@ -195,6 +234,22 @@ fun SettingsScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            SettingsCard {
+                Row(
+                    modifier = Modifier.fillMaxWidth().clickable { csvLauncher.launch("tieni_il_filo_filati.csv") }.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(Icons.Default.Description, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text("Esporta CSV inventario", style = MaterialTheme.typography.titleSmall)
+                        Text("Tabella filati per Excel", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
 
             SettingsCard {

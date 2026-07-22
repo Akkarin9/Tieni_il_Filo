@@ -55,4 +55,7 @@ interface YarnDao {
 
     @Query("SELECT COALESCE(SUM(unit_price), 0) FROM yarns WHERE unit_price IS NOT NULL AND is_wishlist = 0")
     suspend fun getTotalPrice(): Double
+
+    @Query("SELECT * FROM yarns WHERE is_wishlist = 0 ORDER BY name ASC")
+    suspend fun getAllYarnsBlocking(): List<YarnEntity>
 }

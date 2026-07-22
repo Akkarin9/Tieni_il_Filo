@@ -16,7 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.tieniilfilo.app.R
 
 @Composable
 fun TieniIlFiloBottomNav(
@@ -52,8 +54,18 @@ fun TieniIlFiloBottomNav(
                         )
                     }
                 },
-                label = { Text(text = item.label) },
+                label = {
+                    Text(text = stringResource(itemLabel(item.screen)))
+                },
             )
         }
     }
+}
+
+private fun itemLabel(screen: Screen): Int = when (screen) {
+    Screen.Home -> R.string.home
+    Screen.Yarns -> R.string.yarns
+    Screen.Projects -> R.string.projects
+    Screen.Patterns -> R.string.patterns
+    else -> R.string.home
 }

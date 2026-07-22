@@ -25,8 +25,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tieniilfilo.app.R
 import com.tieniilfilo.app.ui.components.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,7 +46,7 @@ fun StatsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Statistiche") })
+            TopAppBar(title = { Text(stringResource(R.string.stats_title)) })
         },
     ) { padding ->
         Column(

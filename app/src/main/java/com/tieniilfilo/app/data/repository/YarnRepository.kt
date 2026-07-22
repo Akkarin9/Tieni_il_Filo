@@ -38,4 +38,6 @@ class YarnRepository @Inject constructor(
         yarnDao.getYarnsForProject(projectId)
 
     suspend fun getTotalPrice(): Double = yarnDao.getTotalPrice()
+
+    suspend fun getAllYarnsBlocking(): List<YarnEntity> = yarnDao.getAllYarnsBlocking()
 }

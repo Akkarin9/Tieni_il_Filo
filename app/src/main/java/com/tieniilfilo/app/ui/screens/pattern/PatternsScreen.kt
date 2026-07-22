@@ -56,11 +56,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tieniilfilo.app.R
 import com.tieniilfilo.app.data.local.entity.PatternEntity
 import com.tieniilfilo.app.data.local.entity.PatternSourceType
 import com.tieniilfilo.app.data.local.entity.PatternType
@@ -106,7 +107,7 @@ fun PatternsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Schemi") },
+                title = { Text(stringResource(R.string.patterns_title)) },
                 actions = {
                     Row(
                         modifier = Modifier.clickable { showSortMenu = true }.padding(horizontal = 8.dp),

@@ -26,8 +26,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tieniilfilo.app.R
 import com.tieniilfilo.app.data.local.entity.HookEntity
 import com.tieniilfilo.app.data.local.entity.HookMaterial
 import com.tieniilfilo.app.ui.components.EmptyState
@@ -44,7 +46,7 @@ fun HooksScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Uncinetti") })
+            TopAppBar(title = { Text(stringResource(R.string.hooks_title)) })
         },
     ) { padding ->
         if (hooks.isEmpty()) {

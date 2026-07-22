@@ -45,4 +45,203 @@
     <string name="clear_demo_subtitle">Clear sample records</string>
     <string name="app_version">Tieni il Filo v1.0.0</string>
     <string name="made_with_love">Made with love for creators</string>
+    <string name="csv_export">Export CSV inventory</string>
+    <string name="csv_subtitle">Yarn table for Excel</string>
+    <string name="csv_exported">CSV exported</string>
+    <string name="csv_failed">CSV export failed</string>
+    <string name="share_project">Share project</string>
+    
+    <!-- Onboarding -->
+    <string name="onboarding_welcome">Welcome to Tieni il Filo</string>
+    <string name="onboarding_welcome_sub">The warm and simple app to organize yarns, hooks, and crochet projects.</string>
+    <string name="onboarding_storage">Your storage</string>
+    <string name="onboarding_storage_sub">Register yarns with color, quantity, and status. Hooks are in the Yarns section.</string>
+    <string name="onboarding_projects">Projects and patterns</string>
+    <string name="onboarding_projects_sub">Track works in progress, complete with confetti, and keep favorite patterns at hand.</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_start">Start creating</string>
+
+    <!-- Home -->
+    <string name="greeting">Hello creator!</string>
+    <string name="greeting_sub">Ready for the next project?</string>
+    <string name="in_progress">In progress</string>
+    <string name="completed">Completed</string>
+    <string name="your_colors">Your colors</string>
+    <string name="active_projects">Active projects</string>
+    <string name="see_all">See all projects →</string>
+
+    <!-- Yarns list -->
+    <string name="yarns_title">Yarns</string>
+    <string name="hooks_title">Hooks</string>
+    <string name="hooks_access">Hooks</string>
+    <string name="no_yarns">No yarns found</string>
+    <string name="no_yarns_sub">Try changing filters or add a new yarn</string>
+    <string name="add_yarn">Add yarn</string>
+    <string name="delete_photo">Remove photo</string>
+    <string name="wishlist_indicator">Wish</string>
+
+    <!-- Yarn form -->
+    <string name="new_yarn">New yarn</string>
+    <string name="edit_yarn">Edit yarn</string>
+    <string name="update_yarn">Update yarn</string>
+    <string name="save_yarn">Save yarn</string>
+    <string name="brand">Brand</string>
+    <string name="color_name">Color name</string>
+    <string name="quantity">Quantity</string>
+    <string name="balls">Balls</string>
+    <string name="grams">Grams</string>
+    <string name="meters">Meters</string>
+    <string name="unit_price">Unit price (€)</string>
+    <string name="source">Source</string>
+    <string name="physical_store">Physical store</string>
+    <string name="online">Online</string>
+    <string name="store_name">Store name</string>
+    <string name="store_link">Link / URL</string>
+    <string name="edit_photo">Gallery</string>
+    <string name="remove_photo_btn">Remove</string>
+    <string name="yarn_not_found">Yarn not found</string>
+
+    <!-- Yarn detail -->
+    <string name="delete_yarn">Delete yarn</string>
+    <string name="edit_yarn_btn">Edit yarn</string>
+    <string name="composition_label">Composition</string>
+    <string name="quantity_used">Quantity used</string>
+    <string name="delete_confirm">Delete %1$s? This cannot be undone.</string>
+
+    <!-- Hooks -->
+    <string name="no_hooks">No hooks</string>
+    <string name="add_hook">Add hook</string>
+    <string name="add_first_hook">Add your first hook to start</string>
+    <string name="new_hook">New hook</string>
+    <string name="save_hook">Save hook</string>
+    <string name="size_mm">Size: %1$.1f mm</string>
+    <string name="material">Material</string>
+
+    <!-- Projects -->
+    <string name="projects_title">Projects</string>
+    <string name="no_projects">No projects</string>
+    <string name="no_projects_sub">Start your first creative project!</string>
+    <string name="add_project">Add project</string>
+    <string name="new_project">New project</string>
+    <string name="edit_project">Edit project</string>
+    <string name="update_project">Update project</string>
+    <string name="save_project">Save project</string>
+    <string name="started">Started: %1$s</string>
+    <string name="completed_date">Completed: %1$s</string>
+    <string name="deadline_label">Deadline (dd/mm/yyyy)</string>
+    <string name="expired_ago">Expired %1$d days ago</string>
+    <string name="expires_today">Expires today!</string>
+    <string name="expires_tomorrow">Expires tomorrow!</string>
+    <string name="expires_in">Expires in %1$d days</string>
+    <string name="linked_pattern">Linked pattern</string>
+    <string name="progress_photos">Progress photos</string>
+    <string name="no_photos_yet">No photos yet. Add one to track progress!</string>
+    <string name="mark_completed">Mark as completed</string>
+    <string name="project_not_found">Project not found</string>
+    <string name="delete_project">Delete project</string>
+    <string name="delete_photo_btn">Delete photo</string>
+    <string name="rating_label">Rating</string>
+    <string name="select_pattern">Select pattern</string>
+    <string name="no_pattern">No pattern</string>
+    <string name="remove_pattern">Remove pattern</string>
+
+    <!-- Patterns -->
+    <string name="patterns_title">Patterns</string>
+    <string name="no_patterns">No patterns</string>
+    <string name="no_patterns_sub">Add patterns for your projects</string>
+    <string name="add_pattern">Add pattern</string>
+    <string name="new_pattern">New pattern</string>
+    <string name="edit_pattern">Edit pattern</string>
+    <string name="update_pattern">Update pattern</string>
+    <string name="save_pattern">Save pattern</string>
+    <string name="type">Type</string>
+    <string name="source_type">Source</string>
+    <string name="pdf">PDF</string>
+    <string name="image">Image</string>
+    <string name="link">Link</string>
+    <string name="link_url">URL (Ravelry, blog...)</string>
+    <string name="select_pdf">Select PDF</string>
+    <string name="change_pdf">Change PDF</string>
+    <string name="document_pdf">PDF Document</string>
+    <string name="image_label">Image</string>
+    <string name="external_link">External link</string>
+    <string name="open_pdf">Open PDF</string>
+    <string name="remove_pdf">Remove PDF</string>
+    <string name="open_link">Open link</string>
+    <string name="remove_image">Remove image</string>
+    <string name="remove_favorite">Remove favorite</string>
+    <string name="add_favorite">Add favorite</string>
+    <string name="pattern_not_found">Pattern not found</string>
+    <string name="delete_pattern">Delete pattern</string>
+
+    <!-- Stats -->
+    <string name="stats_title">Statistics</string>
+    <string name="warehouse_value">Warehouse value</string>
+    <string name="total_projects_msg">You have %1$d projects in total. Keep going!</string>
+    <string name="no_data_yet">No data yet</string>
+    <string name="no_data_sub">Start adding yarns and projects to see statistics!</string>
+
+    <!-- Gallery -->
+    <string name="gallery_title">Gallery</string>
+    <string name="no_photos">No photos</string>
+    <string name="no_photos_sub">Complete a project to add photos to the gallery</string>
+
+    <!-- Common -->
+    <string name="camera">Camera</string>
+    <string name="fullscreen_image">Full screen image</string>
+    <string name="delete_item">Delete %1$s</string>
+    <string name="deleted_msg">%1$s deleted</string>
+    <string name="tap_to_open">Tap to open →</string>
+    <string name="custom_composition_hint">Custom composition (e.g. 50% Cotton, 50% Acrylic)</string>
+    <string name="selected_colors">Selected (tap to remove):</string>
+    <string name="colors">Colors</string>
+    <string name="customize">Customize</string>
+    <string name="hue">Hue</string>
+    <string name="saturation_label">Sat.</string>
+    <string name="lightness">Lum.</string>
+    <string name="add_custom_color">Add custom color</string>
+    <string name="remove_custom_color">Remove custom color</string>
+    <string name="remove_color">Remove color</string>
+    <string name="hex_placeholder">#RRGGBB</string>
+    <string name="hex_add">Add</string>
+
+    <!-- Enum - YarnStatus -->
+    <string name="yarn_status_available">Available</string>
+    <string name="yarn_status_in_use">In use</string>
+    <string name="yarn_status_exhausted">Exhausted</string>
+    
+    <!-- Enum - YarnComposition -->
+    <string name="yarn_comp_wool">Wool</string>
+    <string name="yarn_comp_cotton">Cotton</string>
+    <string name="yarn_comp_blend">Blend</string>
+    <string name="yarn_comp_acrylic">Acrylic</string>
+    <string name="yarn_comp_alpaca">Alpaca</string>
+    <string name="yarn_comp_merino">Merino</string>
+    <string name="yarn_comp_bamboo">Bamboo</string>
+    <string name="yarn_comp_silk">Silk</string>
+    <string name="yarn_comp_linen">Linen</string>
+    <string name="yarn_comp_other">Other</string>
+
+    <!-- Enum - ProjectStatus -->
+    <string name="project_status_in_progress">In progress</string>
+    <string name="project_status_paused">Paused</string>
+    <string name="project_status_completed_label">Completed</string>
+    <string name="project_status_to_start">To start</string>
+
+    <!-- Enum - PatternType -->
+    <string name="pattern_type_amigurumi">Amigurumi</string>
+    <string name="pattern_type_clothing">Clothing</string>
+    <string name="pattern_type_accessories">Accessories</string>
+    <string name="pattern_type_blankets">Blankets</string>
+    <string name="pattern_type_home">Home</string>
+    <string name="pattern_type_other">Other</string>
+
+    <!-- Enum - HookMaterial -->
+    <string name="hook_material_metal">Metal</string>
+    <string name="hook_material_bamboo">Bamboo</string>
+    <string name="hook_material_ergonomic">Ergonomic</string>
+    <string name="hook_material_plastic">Plastic</string>
+    <string name="hook_material_wood">Wood</string>
+    <string name="hook_material_other">Other</string>
 </resources>

@@ -30,7 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.tieniilfilo.app.R
 import com.tieniilfilo.app.data.local.entity.ProjectPhotoEntity
 import com.tieniilfilo.app.ui.components.EmptyState
 import com.tieniilfilo.app.ui.screens.project.formatDate
@@ -42,7 +44,7 @@ fun GalleryScreen() {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Galleria") })
+            TopAppBar(title = { Text(stringResource(R.string.gallery_title)) })
         },
     ) { padding ->
         if (photos.isEmpty()) {
